@@ -1,13 +1,15 @@
 "use client";
 import { getQueryClient } from "@/app/get-query-client";
 import { acceptInvitation } from "@common/api";
+import { AvatarSize } from "@common/constants";
 import { Button } from "@components/button/button.component";
 import { useRedirect } from "@components/redirect/use-redirect.hook";
+import { ServerIcon } from "@components/server-icon/server-icon.component";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 
 interface InviteProps {
-  serverIcon: string;
+  serverIcon: string | null;
   serverName: string;
   membersCount: number;
   serverId: number;
@@ -38,12 +40,14 @@ export function Invite({
         "Sorry something went wrong! Try again later."}
       <div className="px-32 py-16 bg-black-600 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg">
         <div className="text-white-500 flex flex-col items-center min-w-72 gap-4">
-          <Image
-            alt=""
-            src={serverIcon}
-            width={80}
-            height={80}
-            className="object-none"
+          <ServerIcon
+            server={{
+              serverIcon,
+              name: serverName,
+              id: serverId,
+              iconPlaceholder: null,
+            }}
+            size={AvatarSize.XXXL}
           />
           <p>You&apos;ve been invited to join</p>
           <h1>

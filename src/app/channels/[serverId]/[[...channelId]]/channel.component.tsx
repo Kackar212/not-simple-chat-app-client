@@ -27,7 +27,7 @@ interface ServerPageProps {
 export default function Channel({ params, messages }: ServerPageProps) {
   const { serverId } = params;
   const channelId = Number(params.channelId[0]);
-  console.log(messages);
+
   const queryClient = useQueryClient();
 
   const {
@@ -213,6 +213,7 @@ export default function Channel({ params, messages }: ServerPageProps) {
       channelType={channel.type}
       server={server}
       isRequestAccepted={true}
+      messages={messages}
     />
   );
 }

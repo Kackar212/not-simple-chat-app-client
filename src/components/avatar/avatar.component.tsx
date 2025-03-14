@@ -14,9 +14,8 @@ export interface AvatarProps {
   className?: string;
   containerClassName?: string;
   hiddenStatus?: boolean;
-  placeholder?: `data:image/${string};base64,${string}`;
+  placeholder?: `data:image/${string};base64,${string}` | null;
   rounded?: boolean;
-  borderMask?: boolean;
 }
 
 const DEFAULT_SIZE = 16;
@@ -31,7 +30,6 @@ export function Avatar({
   className = "",
   containerClassName = "",
   rounded = true,
-  borderMask = false,
 }: AvatarProps) {
   return (
     <span
@@ -70,7 +68,7 @@ export function Avatar({
               className
             )}
             placeholder="blur"
-            blurDataURL={placeholder}
+            blurDataURL={placeholder ? placeholder : undefined}
             src={src}
             alt={alt}
             width={size}

@@ -11,7 +11,7 @@ interface DirectMessageChannel {
 
 export default async function DirectMessageChannel({
   params,
-}: PropsWithChildren<DirectMessageChannel>) {
+}: DirectMessageChannel) {
   const cookieStore = await cookies();
   const routeParams = await params;
   const messages = getMessages({

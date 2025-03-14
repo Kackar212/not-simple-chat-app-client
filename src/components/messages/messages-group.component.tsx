@@ -19,7 +19,7 @@ export function MessagesGroup({
   blacklist,
 }: MessagesGroupProps) {
   const isAuthorBlocked = blacklist.some(
-    ({ blocked: { id } }) => message.user.userId === id
+    ({ blocked: { id } }) => message.member.userId === id
   );
   const isSystemGroup = message.isSystemMessage;
   const isHidden = isAuthorBlocked && !isSystemGroup;

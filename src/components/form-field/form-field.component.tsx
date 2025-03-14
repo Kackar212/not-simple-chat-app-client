@@ -19,8 +19,8 @@ import { useFormField } from "./use-form-field.hook";
 import CloseIcon from "/public/assets/icons/close.svg";
 import { Button } from "@components/button/button.component";
 
-export type FormFieldProps = HTMLProps<HTMLInputElement> & {
-  label: ReactNode;
+export type FormFieldProps = Omit<HTMLProps<HTMLInputElement>, "label"> & {
+  label: React.ReactNode;
   name: string;
   Icon?: ReactNode;
   hint?: ReactNode;

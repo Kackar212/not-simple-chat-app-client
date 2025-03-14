@@ -4,6 +4,7 @@ import { Direction } from "@common/api/hooks";
 import { getMessages } from "@common/api";
 import { QueryKey } from "@common/constants";
 import { Suspense } from "react";
+import { cookies } from "next/headers";
 
 interface LayoutProps {
   params: Promise<{
@@ -13,9 +14,13 @@ interface LayoutProps {
 }
 
 export default async function Layout({ params }: LayoutProps) {
+  const cookieStore = await cookies();
   const routeParams = await params;
 
-  const messages = getMessages({ channelId: Number(routeParams.channelId[0]) });
+  const messages = getMessages({
+    channelId: Number(routeParams.channelId[0]),
+    sessionId: cookieStore.get("connect.sid")?.value,
+  });
 
   return <Channel params={routeParams} messages={messages} />;
 }

@@ -331,15 +331,8 @@ export function ProfileHeader({
                 size={AvatarSize.XXXXL}
                 src={user.avatar}
                 status={user.status}
-                borderMask
                 containerClassName=""
               />
-              {/* <UserStatus
-              status={user.status}
-              scale={1.75}
-              containerClassName="top-3/4 left-3/4 z-30"
-              innerClassName="border-current"
-            /> */}
             </div>
           </button>
         </div>

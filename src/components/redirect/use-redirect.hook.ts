@@ -42,7 +42,7 @@ export function useRedirect({
         });
       });
     },
-    [to, options.scroll, timeoutMs]
+    [timeoutMs, push, router, to, options]
   );
 
   return { isRedirecting: isPending, redirect };

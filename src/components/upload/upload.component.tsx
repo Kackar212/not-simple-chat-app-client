@@ -1,22 +1,12 @@
 import { UPLOAD_ICON_ALLOWED_MIME_TYPES } from "@common/constants";
-import {
-  FormField,
-  FormFieldProps,
-} from "@components/form-field/form-field.component";
 import { PlusIcon } from "@components/icons/plus.icon";
 import { UploadIcon } from "@components/icons/upload.icon";
 import { InputProps } from "@components/input/input-props.interface";
 import { Input } from "@components/input/input.component";
-import { HistoryFile, useUpload } from "@components/upload/use-upload.hook";
 import Image from "next/image";
-import { LegacyRef, useCallback, useEffect } from "react";
-import {
-  Controller,
-  FieldError,
-  useFormContext,
-  UseFormRegisterReturn,
-} from "react-hook-form";
+import { Controller, FieldError, UseFormRegisterReturn } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
+import { HistoryFile } from "./history-file.interface";
 
 export type UploadProps<
   Type extends "file",

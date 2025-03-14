@@ -25,6 +25,7 @@ export const handlers = [
         member,
         blacklist: [],
         emojis: [],
+        pendingFriends: 0,
       };
 
       if (searchParams.get("serverId") === "2") {

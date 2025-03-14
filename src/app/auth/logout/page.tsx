@@ -1,19 +1,14 @@
 "use client";
 
-import { changeActivity, ErrorType, logout } from "@common/api";
-import { revalidateQuery } from "@common/api/api.actions";
+import { ErrorType, logout } from "@common/api";
 import { useMutation } from "@common/api/hooks/use-mutation.hook";
-import { AuthAction } from "@common/auth/auth-action.enum";
 import { authContext } from "@common/auth/auth.context";
 import { ActivityStatus } from "@common/enums/activity-status.enum";
 import { useSafeContext } from "@common/hooks";
 import { Route } from "@common/route.enum";
 import { socket, SocketEvent } from "@common/socket";
-import { Loader } from "@components/loader/loader.component";
 import { Redirect } from "@components/redirect/redirect.component";
-import { useRedirect } from "@components/redirect/use-redirect.hook";
-import { revalidatePath } from "next/cache";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Logout() {

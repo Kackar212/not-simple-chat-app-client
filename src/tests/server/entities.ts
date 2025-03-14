@@ -1,10 +1,11 @@
 import { Friend } from "@common/api/schemas/friend.schema";
 import { Member } from "@common/api/schemas/member.schema";
-import { Server } from "@common/api/schemas/server.schema";
+import { Server, UserServer } from "@common/api/schemas/server.schema";
 import { Recipient, User } from "@common/api/schemas/user.schema";
 import { ActivityStatus } from "@common/enums/activity-status.enum";
 import { ChannelType } from "@common/enums/channel-type.enum";
 import { FriendStatus } from "@common/enums/friend-status.enum";
+import { SpecialStatus } from "@common/enums/special-status.enum";
 
 export const createChannelEntityMock = (id: number) => ({
   id,
@@ -18,7 +19,7 @@ export const createUserServerEntityMock = (
   serverId: number,
   channelId?: number,
   serverIcon: string | null = null
-) => ({
+): UserServer => ({
   id: serverId,
   name: `server test ${serverId}`,
   serverIcon,
@@ -44,6 +45,15 @@ export const createServerEntityMock = (
     members: [member],
     defaultChannel: channel,
     channels: [channel],
+    inviteLink: {
+      createdAt: new Date().toISOString(),
+      expiration: 7,
+      inviteId: "foo",
+      numberOfUses: -1,
+      updatedAt: new Date().toISOString(),
+      url: "",
+      usesLeft: 1,
+    },
     ...server,
   };
 };
@@ -58,6 +68,8 @@ export const createUserEntityMock = (user: Partial<User> = {}) => ({
   backgroundColor: "#fff",
   backgroundImage: null,
   createdAt: new Date().toISOString(),
+  isInvisible: false,
+  specialStatus: null,
   ...user,
 });
 
@@ -78,6 +90,8 @@ export const createMemberEntityMock = (member: Partial<Member> = {}) => ({
     memberId: 1,
     serverId: 1,
   },
+  isInvisible: false,
+  specialStatus: null,
   ...member,
 });
 
@@ -99,14 +113,16 @@ export const createRecipientEntityMock = (
   memberId: 2,
   isCurrentUserBlocked: false,
   ...recipient,
+  isInvisible: false,
+  specialStatus: null,
 });
 
 export const createFriendEntityMock = (
   friend: Partial<Friend> = {}
 ): Friend => ({
   friendName: "Friend",
-  userId: 1,
-  friend: user,
+  id: 1,
+  username: "Host",
   user: createUserEntityMock({ id: 10 }),
   status: FriendStatus.Online,
   isInvited: false,

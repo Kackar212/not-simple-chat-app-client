@@ -69,42 +69,8 @@ export function GifPickerMasonry({
           {...cellProps}
         />
       );
-
-      // return (
-      //   <CellMeasurer cache={cache} index={index} key={key} parent={parent}>
-      //     <div style={style}>
-      //       <div className="relative">
-      //         <button
-      //           aria-disabled={isFetching}
-      //           aria-label={content_description}
-      //           className="before:size-full before:absolute before:left-0 before:top-0 before:z-50 contents"
-      //           onClick={() => onSelect(item)}
-      //         ></button>
-      //         {isFetching && (
-      //           <div className="absolute z-20 size-full top-0 left-0 bg-gray-150 rounded-md"></div>
-      //         )}
-      //         <video
-      //           src={tinymp4.url}
-      //           loop
-      //           playsInline
-      //           autoPlay
-      //           muted
-      //           preload="auto"
-      //           width={COLUMN_WIDTH}
-      //           height={height}
-      //           style={{
-      //             width: COLUMN_WIDTH,
-      //             height,
-      //             aspectRatio: `${COLUMN_WIDTH} / ${height}`,
-      //           }}
-      //           className="rounded-md"
-      //         ></video>
-      //       </div>
-      //     </div>
-      //   </CellMeasurer>
-      // );
     },
-    [cache, isFetching, itemsWithSizes, onSelect]
+    [cache, isFetching, itemsWithSizes, onSelect, setIsOpen]
   );
 
   const isFetchingNextPage = useRef<boolean>(false);

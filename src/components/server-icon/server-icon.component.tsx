@@ -8,7 +8,7 @@ interface ServerIconPlaceholderProps extends Omit<AvatarProps, "src"> {
 }
 
 export function ServerIcon({ server, ...props }: ServerIconPlaceholderProps) {
-  if (server.serverIcon && server.iconPlaceholder) {
+  if (server.serverIcon) {
     return (
       <Avatar
         {...props}
