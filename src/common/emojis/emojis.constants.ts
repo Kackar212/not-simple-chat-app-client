@@ -1,0 +1,6 @@
+export const DIVERSITY_SPRITE_SHEET_EMOJIS_PER_ROW = 10;
+export const SPRITE_SHEET_EMOJIS_PER_ROW = 42;
+export const DIVERSITY_SPRITE_SHEET_ROWS = 31;
+export const SPRITE_SHEET_EMOJIS_ROWS = 39;
+export const MASK_ROWS = 4;
+export const MASK_COLUMNS = 20;
