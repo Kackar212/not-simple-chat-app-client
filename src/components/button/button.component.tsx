@@ -32,6 +32,7 @@ export function Button({
     successMessage: "",
     errorMessage: "",
   },
+  className,
   ...attrs
 }: PropsWithChildren<ButtonProps>) {
   const { isError, isSuccess } = mutationResult;
@@ -41,7 +42,7 @@ export function Button({
       <button
         className={twMerge(
           "button",
-          attrs.className,
+          className,
           isSuccess && "bg-green-500",
           isError && "bg-red-500"
         )}

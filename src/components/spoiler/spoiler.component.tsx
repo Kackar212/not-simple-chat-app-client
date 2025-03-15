@@ -13,7 +13,7 @@ const Key = {
   Space: "Space",
 };
 
-// I needed to use other element instead of button because button can't be truly inline so it would not be possible to use it inside inline context.
+// I used span instead of button because button can't be truly inline so it would not be possible to use it inside inline context.
 export function Spoiler({ children }: PropsWithChildren<{}>) {
   const [isHidden, setIsHidden] = useState<boolean>(true);
   const { current: id } = useRef(
