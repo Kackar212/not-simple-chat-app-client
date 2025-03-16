@@ -100,7 +100,6 @@ export function ModalRoot(props: ModalProps) {
           </div>
         </div>
       </dialog>
-      {/* </FocusTrap> */}
       {isOpen && (
         <div className="bg-black-1000/50 fixed top-0 left-0 bottom-0 right-0 z-[130]"></div>
       )}

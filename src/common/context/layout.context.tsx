@@ -47,7 +47,6 @@ export function LayoutProvider({ children }: PropsWithChildren) {
   return (
     <layoutContext.Provider value={{ ...state, dispatch }}>
       {children}
-      {/* {isPanelOpen && <layout />} */}
     </layoutContext.Provider>
   );
 }

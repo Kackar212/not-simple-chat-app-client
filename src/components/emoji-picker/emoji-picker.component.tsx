@@ -329,15 +329,6 @@ export function EmojiPicker({ onSelect }: EmojiPickerProps) {
                 </span>
               </Tab>
             ))}
-            {/* <li className="w-12 p-2 h-full bg-black-700 flex flex-col list-none absolute -left-12 top-0">
-                <ul>
-                  {servers.map(({ id, serverIcon }) => (
-                    <Tab key={id} className="w-8 cursor-pointer">
-                      <Avatar src={serverIcon} alt="" width={28} height={28} />
-                    </Tab>
-                  ))}
-                </ul>
-              </li> */}
           </TabList>
         </div>
         <div className="flex flex-col flex-grow">

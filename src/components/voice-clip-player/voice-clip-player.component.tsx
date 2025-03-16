@@ -446,7 +446,6 @@ export function VoiceClipPlayer({
               {formatDuration(MAX_CLIP_DURATION)}
             </span>
           )}
-          {/* {!isRecording && ( */}
           <div className="flex items-center ml-2 gap-2 text-gray-150 text-sm">
             <div
               className={twMerge(
@@ -461,7 +460,6 @@ export function VoiceClipPlayer({
             ></div>
             {!isRecording && <span>{formatDuration(currentTime)}</span>}
           </div>
-          {/* )} */}
           {!isRecording && (
             <>
               <label className="sr-only" htmlFor={`duration_${id.current}`}>

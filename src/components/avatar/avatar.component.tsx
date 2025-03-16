@@ -83,9 +83,6 @@ export function Avatar({
           />
         </foreignObject>
       </svg>
-      {/* </foreignObject>
-      </svg> */}
-      {/* </Icon> */}
       {status && !hiddenStatus && (
         <UserStatus
           status={status}

@@ -210,10 +210,6 @@ export function Channels({ channels = [], server }: ChannelsListProps) {
       </button>
       {shouldDisplaySidebar && (
         <Sidebar server={server} className="z-[106]">
-          {/* <button className="flex justify-between items-center text-white-500 px-3 p-3.5 font-[600] shadow-header">
-            {server && server.name}
-            <ChevronIcon className="size-5" />
-          </button> */}
           <div className="relative">
             {server && (
               <Menu

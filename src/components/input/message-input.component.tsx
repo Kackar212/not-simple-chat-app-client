@@ -302,7 +302,6 @@ export function MessageInput({
         containerClassName
       )}
     >
-      {/* <TipTapEditor /> */}
       <Controller
         name={name}
         control={control}

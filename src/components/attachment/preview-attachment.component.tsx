@@ -91,7 +91,6 @@ export function PreviewAttachment({
           >
             Spoiler
           </div>
-          {/* <div className="bg-black-1000 bg-opacity-60 absolute top-0 left-0 size-full"></div> */}
           <div
             className={twMerge(
               "flex flex-col w-full justify-center items-center h-full",
@@ -110,9 +109,6 @@ export function PreviewAttachment({
             {isAudio && (
               <audio src={url} controls className="w-full z-10"></audio>
             )}
-            {/* {isAudio && isVoiceClip && (
-              <VoiceClipPlayer isRecording={false} blob={fileRef.current} />
-            )} */}
             {isVideo && (
               <video src={url} controls className="z-10 rounded-[3px]"></video>
             )}
@@ -161,7 +157,6 @@ export function PreviewAttachment({
           {name}
         </span>
       </Link>
-      {/* </div> */}
     </li>
   );
 }

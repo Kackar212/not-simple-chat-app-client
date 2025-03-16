@@ -308,7 +308,6 @@ export function ProfileHeader({
             ></div>
           </foreignObject>
         </svg>
-        {/* </div> */}
         <div className={twMerge("h-8", inModal && "h-12")}>
           <button
             aria-label={inModal ? undefined : "Open profile"}

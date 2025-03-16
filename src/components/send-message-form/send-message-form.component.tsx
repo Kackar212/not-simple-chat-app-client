@@ -647,9 +647,6 @@ export function SendMessageForm({
           </span>
           <h2 className="flex gap-2 mt-4 text-2xl font-semibold">
             Sorry, its too big.
-            {/* <span style={sizeLimitModalEmoji} className="inline-block size-6">
-              <span style={style.emoji}></span>
-            </span> */}
           </h2>
           <span className="text-xs">that is what she said</span>
           <p className="mt-4 text-center text-sm">

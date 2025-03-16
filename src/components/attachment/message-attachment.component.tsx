@@ -1,27 +1,26 @@
 /* eslint-disable @next/next/no-img-element */
+import React, { MouseEventHandler, useState } from "react";
 import { deleteAttachment } from "@common/api";
 import { Attachment } from "@common/api/schemas/attachment.schema";
 import { AttachmentType } from "@common/enums/attachment-type.enum";
 import { DownloadIcon } from "@components/icons/download.icon";
-
 import { Link } from "@components/link/link.component";
-import Image from "next/image";
-import React, { MouseEventHandler, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { DocumentAttachment } from "./document-attachment.component";
 import { VideoAttachment } from "./video-attachment.component";
 import { Loader } from "@components/loader/loader.component";
-import { MessageType } from "@common/enums/message-type.enum";
-import { createImagePlaceholder, download } from "@common/utils";
+import { download } from "@common/utils";
 import { DocumentIcon } from "@components/icons/document.icon";
 import { SpeakerIcon } from "@components/icons/speaker.icon";
 import { Button } from "@components/button/button.component";
-import { CheckIcon } from "@components/icons/check.icon";
 import { useMutation } from "@common/api/hooks/use-mutation.hook";
-import TrashIcon from "/public/assets/icons/trash-bin.svg";
 import { EyeSlashIcon } from "@components/icons";
 import { toast } from "react-toastify";
 import { VoiceClipPlayer } from "@components/voice-clip-player/voice-clip-player.component";
+import Image from "next/image";
+import TrashIcon from "/public/assets/icons/trash-bin.svg";
+import { useSafeContext } from "@common/hooks";
+import { chatContext } from "@components/chat/chat.context";
 
 const MAX_WIDTH = 640;
 
@@ -76,6 +75,7 @@ export function MessageAttachment({
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(isOtherOrText);
+  const { channelId } = useSafeContext(chatContext);
 
   if (width === 0 && height === 0) {
     return null;
@@ -326,7 +326,10 @@ export function MessageAttachment({
                       return;
                     }
 
-                    await deleteAttachmentMutation.mutateAsync(id);
+                    await deleteAttachmentMutation.mutateAsync({
+                      attachmentId: id,
+                      channelId,
+                    });
 
                     setTimeout(() => {
                       setIsDeleted(true);

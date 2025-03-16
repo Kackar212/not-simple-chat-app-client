@@ -34,15 +34,11 @@ export function Mutual({
       className="flex gap-2 hover:bg-gray-260/30 rounded-[4px] p-1"
       aria-label={`Go to ${name} ${id === "me" ? "private channel" : "server"}`}
     >
-      {/* {typeof id === "string" && src ? (
-        <Avatar src={src} width={40} height={40} className="rounded-xl" />
-      ) : ( */}
       <ServerIcon
         server={{ name, iconPlaceholder, serverIcon: src, id: +id }}
         size={AvatarSize.XL}
         className="rounded-xl hover:rounded-xl"
       />
-      {/* )} */}
       <div className="flex flex-col justify-center gap-1">
         <span className="text-white-500 font-medium leading-5">{name}</span>
         {displayName && (

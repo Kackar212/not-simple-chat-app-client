@@ -79,7 +79,6 @@ export default function Providers({ children }: PropsWithChildren) {
         >
           <circle fill="white" cx="0.5" cy="0.5" r="0.5"></circle>
           <circle fill="black" cx="0.85" cy="0.85" r="0.175"></circle>
-          {/* <circle fill="black" cx="56" cy="112" r="46"></circle> */}
         </mask>
         <mask
           id="svg-mask-avatar-status-round-32"
@@ -97,7 +96,6 @@ export default function Providers({ children }: PropsWithChildren) {
               <LayoutProvider>{children}</LayoutProvider>
             </RtcProvider>
           </AuthProvider>
-          {/* <ReactQueryDevtools /> */}
         </QueryClientProvider>
       </ErrorBoundary>
       <audio controls={false} src={`/${Sound.Join}.mp3`} id={Sound.Join} />
