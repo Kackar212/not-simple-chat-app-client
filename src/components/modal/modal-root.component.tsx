@@ -1,18 +1,8 @@
 import { useFocusTrap } from "@common/hooks/use-focus-trap.hook";
-import { PlusIcon } from "@components/icons/plus.icon";
-import {
-  HTMLProps,
-  MutableRefObject,
-  PropsWithChildren,
-  ReactNode,
-  useEffect,
-} from "react";
+import { HTMLProps, MutableRefObject, ReactNode, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { twMerge } from "tailwind-merge";
-
-export function WithoutSsr({ children }: PropsWithChildren) {
-  return children;
-}
+import CloseIcon from "/public/assets/icons/close.svg";
 
 export interface ModalProps extends Omit<HTMLProps<HTMLDialogElement>, "open"> {
   close: () => void;
@@ -21,7 +11,7 @@ export interface ModalProps extends Omit<HTMLProps<HTMLDialogElement>, "open"> {
   className?: string;
   fullWidth?: boolean;
   srOnlyDismiss?: boolean;
-  isOpen?: boolean;
+  isOpen: boolean;
   open?: () => void;
 }
 
@@ -91,7 +81,7 @@ export function ModalRoot(props: ModalProps) {
             )}
           >
             <span className="sr-only">Close</span>
-            <PlusIcon className="rotate-[135deg]" />
+            <CloseIcon className="size-6" />
           </button>
           <div
             className={twMerge("min-w-64 w-full p-8", props.fullWidth && "p-0")}

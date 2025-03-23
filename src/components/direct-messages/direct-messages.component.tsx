@@ -2,18 +2,15 @@
 
 import {
   ApiError,
-  createDirectMessageChannel,
   getDirectMessageChannels,
   mutations,
   QueryResponse,
 } from "@common/api";
 import { socket, SocketEvent } from "@common/socket";
-import { Avatar } from "@components/avatar/avatar.component";
 import { Button } from "@components/button/button.component";
 import { FormField } from "@components/form-field/form-field.component";
 import { FormHeader } from "@components/form-header/form-header.component";
 import { Form } from "@components/form/form.component";
-import { PlusIcon } from "@components/icons";
 import { UserGroupIcon } from "@components/icons/user-group.icon";
 import { Link } from "@components/link/link.component";
 import { Modal } from "@components/modal/modal.component";
@@ -31,18 +28,14 @@ import { useSidebar } from "@components/sidebar/use-sidebar.hook";
 import { useEmojiStyle } from "@common/emojis/use-emoji-style.hook";
 import { useSafeContext } from "@common/hooks";
 import { authContext } from "@common/auth/auth.context";
-import { AvatarSize } from "@common/constants";
-import { usePathname } from "next/navigation";
-import ChevronIcon from "/public/assets/icons/chevron.svg";
-import UserIcon from "/public/assets/icons/user.svg";
-import CallIcon from "/public/assets/icons/call.svg";
-import CancelIcon from "/public/assets/icons/close.svg";
 import { DirectMessage } from "./direct-message.component";
 import { toast } from "react-toastify";
 import { InviteFriendList } from "@components/invite-friend-list/invite-friend-list.component";
 import { z } from "zod";
 import { createConfig } from "@common/use-form.config";
-import { getQueryClient } from "@/app/get-query-client";
+import ChevronIcon from "/public/assets/icons/chevron.svg";
+import UserIcon from "/public/assets/icons/user.svg";
+import PlusIcon from "/public/assets/icons/plus.svg";
 
 const queryKey = ["get-direct-message-channels"];
 
@@ -236,15 +229,16 @@ export function DirectMessages() {
               )}
             </Link>
           </div>
-          <div className="text-gray-360 flex justify-between px-2">
-            <h2 className="uppercase font-bold my-4 text-lg">
+          <div className="text-gray-360 flex justify-between px-2 items-center">
+            <h2 className="uppercase text-xs font-semibold my-4">
               Direct messages
             </h2>
-            <button onClick={open}>
+            <button
+              onClick={open}
+              className="hover:bg-green-600 hover:text-white-0 p-1 rounded-[50%] transition-[background-color,color] duration-300"
+            >
               <span className="sr-only">Create direct message</span>
-              <span aria-hidden className="*:scale-75">
-                <PlusIcon />
-              </span>
+              <PlusIcon aria-hidden className="size-5" />
             </button>
             <Modal ref={modal} close={close} isOpen={isOpen} fullWidth>
               <FormProvider {...useFormResult}>

@@ -11,6 +11,7 @@ import {
   MessagesResponseWithCursor,
   MessageWithBaseUser,
   MessageWithBaseUserSchema,
+  UserAnswer,
 } from "@common/api/schemas/message.schema";
 import { Recipient } from "@common/api/schemas/user.schema";
 import { authContext } from "@common/auth/auth.context";
@@ -36,6 +37,7 @@ import {
 import { useOnReaction } from "./use-on-reaction.hook";
 import { useOnMessage } from "./use-on-message.hook";
 import { getQueryClient } from "@/app/get-query-client";
+import { ServerSocketEvents } from "@common/interfaces/server-socket.events.interface";
 
 interface UseChatProps {
   channelId: number;
@@ -54,6 +56,7 @@ export function useChat({
 }: UseChatProps) {
   const scrollContainerRef = useRef<HTMLElement | null>(null);
   const skeletonsRef = useRef<HTMLDivElement | null>(null);
+  const queryClient = useQueryClient();
 
   const {
     auth: { user },
@@ -128,13 +131,62 @@ export function useChat({
     pinnedMessagesTrigger.click();
   }, [popoverProps]);
 
+  const onPollAnswer: ServerSocketEvents["pollAnswer"] = useCallback(
+    (answer) => {
+      queryClient.setQueryData(
+        QueryKey.Messages(channelId),
+        (
+          data: InfiniteData<
+            QueryResponse<MessagesResponseWithCursor, ApiError>
+          >
+        ) => {
+          if (!data) {
+            return data;
+          }
+
+          const pages = data.pages.map((page) => {
+            return {
+              ...page,
+              data: {
+                ...page.data,
+                messages: page.data?.messages.map((message) => {
+                  if (message.id !== answer.messageId) {
+                    return message;
+                  }
+
+                  const userAnswers = message.poll?.pollUserAnswers || [];
+
+                  return {
+                    ...message,
+                    poll: {
+                      ...message.poll,
+                      pollUserAnswers: [...userAnswers, answer],
+                    },
+                  };
+                }),
+              },
+            };
+          });
+
+          return {
+            ...data,
+            pages,
+          };
+        }
+      );
+    },
+    [channelId, queryClient]
+  );
+
   useEffect(() => {
     socket.emit("join", { channelId });
 
-    socket.on("message", onMessage);
+    socket.on(SocketEvent.Message, onMessage);
+    socket.on(SocketEvent.PollAnswer, onPollAnswer);
 
     return () => {
-      socket.off("message");
+      socket.off(SocketEvent.Message, onMessage);
+      socket.off(SocketEvent.PollAnswer, onPollAnswer);
       socket.off("connect");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,4 +1,3 @@
-import { Message } from "@common/api/schemas/message.schema";
 import { ActivityStatus } from "@common/enums/activity-status.enum";
 import { RtpCapabilities } from "mediasoup-client/lib/RtpParameters";
 import { DtlsParameters, ProducerOptions } from "mediasoup-client/lib/types";

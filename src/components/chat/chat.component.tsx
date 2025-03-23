@@ -35,16 +35,6 @@ interface ChatProps {
   messages: ReturnType<typeof getMessages>;
 }
 
-const SendMessageSchema = z.object({
-  message: z
-    .string({ required_error: "is required" })
-    .trim()
-    .min(1, "Message must be at least 1 character")
-    .max(1000, "Message must be at most 1000 characters"),
-});
-
-export type SendMessageSchemaType = z.infer<typeof SendMessageSchema>;
-
 export const Chat = function Chat({
   channelId,
   channelName,
@@ -56,15 +46,6 @@ export const Chat = function Chat({
   queryKey = [],
   messages: initialMessages,
 }: ChatProps) {
-  const useFormResult = useForm<SendMessageSchemaType>(
-    createConfig(SendMessageSchema, {
-      mode: "onSubmit",
-      defaultValues: {
-        message: "",
-      },
-    })
-  );
-
   const {
     mutate,
     isPending,
@@ -73,7 +54,7 @@ export const Chat = function Chat({
 
   const { setSession, isMicrophoneGranted, isInteractionRequired } =
     useSafeContext(rtcContext);
-
+  console.log(initialMessages);
   const microphoneNotGrantedModal = useModal(() => {
     setSession((rtcSession) => ({
       ...rtcSession,
@@ -122,7 +103,7 @@ export const Chat = function Chat({
             <div className="flex grow relative shrink basis-auto min-w-0 min-h-0 text-white-500 z-[105]">
               <ScrollContainer isBlocked={isBlocked} queryKey={queryKey} />
             </div>
-            <div className="flex w-full items-center px-2 pr-3 md:px-4 pb-2 pt-0">
+            <div className="flex w-full items-center px-2 pr-3 md:px-4 pb-0.5">
               {isBlocked && recipient && (
                 <div className="w-full p-3 px-4 text-white-0 bg-black-700 rounded-md font-medium flex justify-between items-center">
                   You can&apos;t send direct messages to the user you have
@@ -153,12 +134,10 @@ export const Chat = function Chat({
                 </div>
               )}
               {!isBlocked && isRequestAccepted !== false && (
-                <FormProvider<SendMessageSchemaType> {...useFormResult}>
-                  <SendMessageForm
-                    channelId={+channelId}
-                    channelName={channelName}
-                  />
-                </FormProvider>
+                <SendMessageForm
+                  channelId={+channelId}
+                  channelName={channelName}
+                />
               )}
             </div>
           </div>

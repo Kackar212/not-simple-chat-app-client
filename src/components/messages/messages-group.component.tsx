@@ -4,10 +4,9 @@ import { Message } from "@components/message/message.component";
 import { Divider } from "@components/chat/divider.component";
 import { Blacklist } from "@common/api/schemas/blacklist.schema";
 import { twMerge } from "tailwind-merge";
-import { PlusIcon } from "@components/icons";
-import { useChat } from "@components/chat/use-chat.hook";
 import { useSafeContext } from "@common/hooks";
 import { chatContext } from "@components/chat/chat.context";
+import CloseIcon from "/public/assets/icons/close.svg";
 
 interface MessagesGroupProps {
   messages: MessageEntity[];
@@ -85,7 +84,7 @@ export function MessagesGroup({
           >
             <span className="flex items-center">
               <span>
-                <PlusIcon className="rotate-45 mr-4 size-4" />
+                <CloseIcon className="mr-4 size-4" />
               </span>
               {subMessages.length + 1} blocked messages.&nbsp;
             </span>

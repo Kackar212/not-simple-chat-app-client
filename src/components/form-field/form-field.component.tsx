@@ -179,9 +179,11 @@ export function FormField(props: FormFieldProps) {
           </>
         )}
         <div className="flex flex-col justify-center peer-[aria-invalid='true']:text-red-500">
-          <label htmlFor={attrs.name} className={labelClassName}>
-            {label}
-          </label>
+          {label && (
+            <label htmlFor={attrs.name} className={labelClassName}>
+              {label}
+            </label>
+          )}
           <span
             className={twMerge(
               "text-red-500 text-sm mb-1 sr-only",

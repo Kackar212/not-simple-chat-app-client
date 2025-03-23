@@ -20,12 +20,16 @@ import {
   useRef,
   useState,
 } from "react";
-import { FieldError, useFormContext } from "react-hook-form";
+import {
+  FieldError,
+  FormProvider,
+  useForm,
+  useFormContext,
+} from "react-hook-form";
 import { getFileSizeWithUnit } from "@common/utils";
 import { ReactEditor, withReact } from "slate-react";
 import { withHistory } from "slate-history";
 import { PaperPlaneIcon } from "@components/icons/paper-plane.icon";
-import { ErrorIcon, PlusIcon } from "@components/icons";
 import { twMerge } from "tailwind-merge";
 import { Modal } from "@components/modal/modal.component";
 import { useModal } from "@components/modal/use-modal.hook";
@@ -54,15 +58,27 @@ import { useRecorder } from "@common/hooks/use-recorder.hook";
 import { HistoryFile } from "@components/upload/history-file.interface";
 import FolderIcon from "/public/assets/icons/folder.svg";
 import MicrophoneIcon from "/public/assets/icons/microphone.svg";
+import { CreatePoll } from "@components/create-poll-form/create-poll.component";
+import { ErrorIcon } from "@components/icons";
+import CloseIcon from "/public/assets/icons/close.svg";
+import { z } from "zod";
+import { createConfig } from "@common/use-form.config";
 
 interface SendMessageFormProps {
   channelId: number;
   channelName: string;
 }
 
-function createRecorder(stream: MediaStream) {
-  return new MediaRecorder(stream);
-}
+const SendMessageSchema = z.object({
+  message: z
+    .string({ required_error: "is required" })
+    .trim()
+    .min(1, "Message must be at least 1 character")
+    .max(1000, "Message must be at most 1000 characters"),
+  messageFiles: z.any(),
+});
+
+export type SendMessageSchemaType = z.infer<typeof SendMessageSchema>;
 
 export function SendMessageForm({
   channelId,
@@ -88,6 +104,19 @@ export function SendMessageForm({
     auth: { member: currentMember, user },
   } = useSafeContext(authContext);
 
+  const sizeLimitModal = useModal(() => {
+    clearErrors("messageFiles");
+  });
+
+  const useFormResult = useForm<SendMessageSchemaType>(
+    createConfig(SendMessageSchema, {
+      mode: "onSubmit",
+      defaultValues: {
+        message: "",
+      },
+    })
+  );
+
   const {
     setValue,
     watch,
@@ -96,11 +125,7 @@ export function SendMessageForm({
     formState: { errors },
     reset,
     handleSubmit,
-  } = useFormContext();
-
-  const sizeLimitModal = useModal(() => {
-    clearErrors("messageFiles");
-  });
+  } = useFormResult;
 
   const {
     history: { files, size },
@@ -115,6 +140,7 @@ export function SendMessageForm({
     onError() {
       sizeLimitModal.open();
     },
+    formContext: useFormResult as any,
   });
 
   const message = watch("message");
@@ -197,6 +223,7 @@ export function SendMessageForm({
     messageReference,
     isSystemMessage: false,
     reactions: [],
+    poll: null,
   });
 
   const getMessagesQueryKey = QueryKey.Messages(channelId);
@@ -315,37 +342,6 @@ export function SendMessageForm({
 
   const messageError = errors.message as FieldError;
 
-  const clickedFileUrl = useRef<
-    | Pick<
-        HistoryFile<{ isSpoiler: boolean }>,
-        | "url"
-        | "isAudio"
-        | "isVideo"
-        | "isImage"
-        | "isOther"
-        | "isText"
-        | "isGif"
-        | "name"
-      >
-    | undefined
-  >();
-  const {
-    ref: modal,
-    isOpen,
-    open,
-    close,
-  } = useModal(() => {
-    clickedFileUrl.current = undefined;
-  });
-
-  const openEnlargedattachment = (
-    file: HistoryFile<{ isSpoiler: boolean }>
-  ) => {
-    clickedFileUrl.current = file;
-
-    open();
-  };
-
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const removeReply = useCallback(() => {
@@ -397,10 +393,8 @@ export function SendMessageForm({
     clearRecorder,
   } = useRecorder();
 
-  console.log(recordedAudio);
-
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       <PopoverProvider>
         {messageReference && (
           <div className="p-2 bg-black-630 rounded-t-md flex justify-between">
@@ -420,7 +414,7 @@ export function SendMessageForm({
               data-tooltip-id="tooltip"
               onClick={removeReply}
             >
-              <PlusIcon className="rotate-45 size-5 text-gray-150" />
+              <CloseIcon className="size-5 text-gray-150" />
               <span className="sr-only">Don&apos;t reply</span>
             </button>
             <Popover>
@@ -433,193 +427,64 @@ export function SendMessageForm({
           </div>
         )}
       </PopoverProvider>
-      <form ref={formRef} onSubmit={onSubmit} className="w-full">
-        <div
-          className={twMerge(
-            "hidden overflow-hidden relative p-2 pt-6 bg-black-560 border-b border-black-600 rounded-t-md",
-            !!files.length && "grid",
-            !!messageReference && "rounded-none"
-          )}
-        >
-          <p className="text-sm absolute top-1 px-1.5 text-white-0">
-            {getFileSizeWithUnit(size)} / {maxFilesSize} MB
-          </p>
-          <ul className="flex py-2 gap-2 overflow-auto px-0.5 w-full scrollbar">
-            {files.map((file) => (
-              <PreviewAttachment
-                key={file.name}
-                open={openEnlargedattachment}
-                {...file}
-              />
-            ))}
-          </ul>
-          <Modal ref={modal} close={close} isOpen={isOpen} fullWidth>
-            <h2 className="sr-only">
-              attachment: {clickedFileUrl.current?.name}
-            </h2>
-            {clickedFileUrl.current &&
-              (clickedFileUrl.current.isOther ||
-                clickedFileUrl.current.isText) && (
-                <iframe
-                  src={clickedFileUrl.current.url}
-                  className="w-[90vw] h-[80vh]"
-                ></iframe>
-              )}
-            {clickedFileUrl.current && clickedFileUrl.current.isImage && (
-              <Image
-                src={clickedFileUrl.current.url}
-                width={320}
-                height={320}
-                className="size-full"
-                alt=""
-              />
+      <FormProvider<SendMessageSchemaType> {...useFormResult}>
+        <form ref={formRef} onSubmit={onSubmit} className="w-full">
+          <div
+            className={twMerge(
+              "hidden overflow-hidden relative p-2 pt-6 bg-black-560 border-b border-black-600 rounded-t-md",
+              !!files.length && "grid",
+              !!messageReference && "rounded-none"
             )}
-            {clickedFileUrl.current && clickedFileUrl.current.isVideo && (
-              <video
-                src={clickedFileUrl.current.url}
-                controls
-                className="w-fit h-auto"
-              ></video>
+          >
+            <p className="text-sm absolute top-1 px-1.5 text-white-0">
+              {getFileSizeWithUnit(size)} / {maxFilesSize} MB
+            </p>
+            <ul className="flex py-2 gap-2 overflow-auto px-0.5 w-full scrollbar">
+              {files.map((file) => (
+                <PreviewAttachment key={file.name} {...file} />
+              ))}
+            </ul>
+          </div>
+          <span
+            className={twMerge(
+              "hidden text-red-500 bg-black-560 text-sm gap-1 flex-col p-1",
+              (error || messageError) && "flex"
             )}
-          </Modal>
-        </div>
-        <span
-          className={twMerge(
-            "hidden text-red-500 bg-black-560 text-sm gap-1 flex-col p-1",
-            (error || messageError) && "flex"
-          )}
-          aria-hidden
-        >
-          {error && (
-            <span className="flex items-center gap-1">
-              <ErrorIcon />
-              {error.message}
-            </span>
-          )}
-          {messageError && (
-            <span className="flex items-center gap-1">
-              <ErrorIcon />
-              {messageError.message}
-            </span>
-          )}
-        </span>
-        <div
-          className={twMerge(
-            "flex bg-black-560 w-full rounded-lg gap-2 items-start relative",
-            (!!files.length || !!messageReference) && "rounded-t-none",
-            (error || messageError) && "rounded-t-none"
-          )}
-        >
-          <MessageUpload
-            error={error}
-            name="messageFiles"
-            onChange={onFilesSelected}
-            files={files}
-          />
-          <MessageInput
-            name={DEFAULT_MESSAGE_INPUT_NAME}
-            onInput={onInput}
-            channelName={channelName}
-            editor={editor}
-            formRef={formRef}
-          />
-          <div className="flex text-gray-150 absolute top-3 right-2.5 gap-2">
-            <GifPicker onSelect={(gif) => createMessage(gif.itemurl, [])} />
-            <PopoverProvider
-              offset={{ mainAxis: 15, alignmentAxis: -10 }}
-              placement="top-end"
-              onOpenChange={() => {
-                ReactEditor.focus(editor);
-              }}
-            >
-              <PopoverTrigger
-                style={properties}
-                type="button"
-                className="size-6 flex justify-center items-center"
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}
-              >
-                <div
-                  style={style.background}
-                  className={twMerge(
-                    "size-6 absolute transition-[scale] opacity-0",
-                    isMouseOver && "scale-125 opacity-100"
-                  )}
-                ></div>
-                <div
-                  style={style.mask}
-                  className={twMerge(
-                    "size-6 bg-gray-150 absolute transition-[scale] duration-200",
-                    isMouseOver && "opacity-0 scale-125"
-                  )}
-                ></div>
-              </PopoverTrigger>
-              <Popover>
-                <EmojiPicker
-                  onSelect={(emoji) => {
-                    editor.insertText(` :${emoji.uniqueName}: `);
-                  }}
-                />
-              </Popover>
-            </PopoverProvider>
-            <div
-              className={twMerge(
-                "flex items-center",
-                (isRecording || recordedAudio) && "-mt-1.5"
-              )}
-            >
-              <button
-                type="button"
-                onClick={startRecording}
-                aria-expanded={isRecording || !!recordedAudio}
-              >
-                <span className="sr-only">Create a voice clip</span>
-                <MicrophoneIcon className="size-6" />
-              </button>
-              <div
-                className={twMerge(
-                  "items-center hidden",
-                  (isRecording || recordedAudio) && "flex"
-                )}
-              >
-                {(isRecording || !!recordedAudio) && (
-                  <VoiceClipPlayer
-                    recorder={recorder}
-                    isRecording={isRecording}
-                    blob={recordedAudio}
-                    clearRecorder={clearRecorder}
-                  />
-                )}
-                <Button
-                  type="button"
-                  className="bg-transparent p-0 rounded-none hover:bg-transparent ml-2 aria-disabled:sr-only"
-                  aria-disabled={!recordedAudio}
-                  onClick={async () => {
-                    if (!recordedAudio) {
-                      return;
-                    }
-
-                    const file = await transformFile(
-                      new File(
-                        [recordedAudio],
-                        `__VOICECLIP__${user.username}.mp3`,
-                        {
-                          type: recordedAudio.type,
-                        }
-                      ),
-                      { isSpoiler: false, isVoiceClip: true }
-                    );
-
-                    createMessage("", [file]);
-
-                    await clearRecorder();
-                  }}
-                >
-                  <span className="sr-only">Send voice clip</span>
-                  <PaperPlaneIcon />
-                </Button>
-              </div>
-            </div>
+            aria-hidden
+          >
+            {error && (
+              <span className="flex items-center gap-1">
+                <ErrorIcon />
+                {error.message}
+              </span>
+            )}
+            {messageError && (
+              <span className="flex items-center gap-1">
+                <ErrorIcon />
+                {messageError.message}
+              </span>
+            )}
+          </span>
+          <div
+            className={twMerge(
+              "flex bg-black-560 w-full rounded-lg gap-2 items-start relative",
+              (!!files.length || !!messageReference) && "rounded-t-none",
+              (error || messageError) && "rounded-t-none"
+            )}
+          >
+            <MessageUpload
+              error={error}
+              name="messageFiles"
+              onChange={onFilesSelected}
+              files={files}
+            />
+            <MessageInput
+              name={DEFAULT_MESSAGE_INPUT_NAME}
+              onInput={onInput}
+              channelName={channelName}
+              editor={editor}
+              formRef={formRef}
+            />
             <Button
               type="submit"
               className={twMerge(
@@ -631,11 +496,113 @@ export function SendMessageForm({
               <PaperPlaneIcon />
             </Button>
           </div>
+        </form>
+      </FormProvider>
+      <div className="flex text-gray-150 absolute bottom-8.5 right-2.5 gap-2">
+        <GifPicker onSelect={(gif) => createMessage(gif.itemurl, [])} />
+        <PopoverProvider
+          offset={{ mainAxis: 15, alignmentAxis: -10 }}
+          placement="top-end"
+          onOpenChange={() => {
+            ReactEditor.focus(editor);
+          }}
+        >
+          <PopoverTrigger
+            style={properties}
+            type="button"
+            className="size-6 flex justify-center items-center"
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+          >
+            <div
+              style={style.background}
+              className={twMerge(
+                "size-6 absolute transition-[scale] opacity-0",
+                isMouseOver && "scale-125 opacity-100"
+              )}
+            ></div>
+            <div
+              style={style.mask}
+              className={twMerge(
+                "size-6 bg-gray-150 absolute transition-[scale] duration-200",
+                isMouseOver && "opacity-0 scale-125"
+              )}
+            ></div>
+          </PopoverTrigger>
+          <Popover>
+            <EmojiPicker
+              onSelect={(emoji) => {
+                editor.insertText(` :${emoji.uniqueName}: `);
+              }}
+            />
+          </Popover>
+        </PopoverProvider>
+        <div
+          className={twMerge(
+            "flex items-center",
+            (isRecording || recordedAudio) && "-mt-1.5"
+          )}
+        >
+          <button
+            type="button"
+            onClick={startRecording}
+            aria-expanded={isRecording || !!recordedAudio}
+          >
+            <span className="sr-only">Create a voice clip</span>
+            <MicrophoneIcon className="size-6" />
+          </button>
+          <div
+            className={twMerge(
+              "items-center hidden",
+              (isRecording || recordedAudio) && "flex"
+            )}
+          >
+            {(isRecording || !!recordedAudio) && (
+              <VoiceClipPlayer
+                recorder={recorder}
+                isRecording={isRecording}
+                blob={recordedAudio}
+                clearRecorder={clearRecorder}
+              />
+            )}
+            <Button
+              type="button"
+              className="bg-transparent p-0 rounded-none hover:bg-transparent ml-2 aria-disabled:sr-only"
+              aria-disabled={!recordedAudio}
+              onClick={async () => {
+                if (!recordedAudio) {
+                  return;
+                }
+
+                const file = await transformFile(
+                  new File(
+                    [recordedAudio],
+                    `__VOICECLIP__${user.username}.mp3`,
+                    {
+                      type: recordedAudio.type,
+                    }
+                  ),
+                  { isSpoiler: false, isVoiceClip: true }
+                );
+
+                createMessage("", [file]);
+
+                await clearRecorder();
+              }}
+            >
+              <span className="sr-only">Send voice clip</span>
+              <PaperPlaneIcon />
+            </Button>
+          </div>
         </div>
-      </form>
-      {typingUsers.length > 0 && (
-        <p className="font-normal text-white-500 mt-1 text-sm">{typingText}</p>
-      )}
+        <CreatePoll channelId={channelId} />
+      </div>
+      <p
+        className="font-normal text-white-500 text-sm mt-0.5 min-h-5 ml-0.5"
+        aria-live="polite"
+      >
+        {typingUsers.length > 0 && typingText}
+      </p>
       <Modal
         isOpen={sizeLimitModal.isOpen}
         close={sizeLimitModal.close}

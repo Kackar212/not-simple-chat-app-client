@@ -54,6 +54,10 @@ export function MemberProfilePreview({
       queryClient.setQueryData(
         queryKey,
         (data: QueryResponse<UserProfile, ApiError>) => {
+          if (!data) {
+            return data;
+          }
+
           if (user.id !== userId) {
             return {
               ...data,

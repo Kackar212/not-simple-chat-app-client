@@ -11,9 +11,6 @@ import { FormField } from "@components/form-field/form-field.component";
 import { FormRadioField } from "@components/form-field/form-radio-field.component";
 import { FormHeader } from "@components/form-header/form-header.component";
 import { Form } from "@components/form/form.component";
-import { PlusIcon } from "@components/icons";
-import { HashTagIcon } from "@components/icons/hashtag.icon";
-import { SpeakerIcon } from "@components/icons/speaker.icon";
 import { Modal } from "@components/modal/modal.component";
 import { useModal } from "@components/modal/use-modal.hook";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -30,6 +27,9 @@ import { useSidebar } from "@components/sidebar/use-sidebar.hook";
 import { Menu } from "@components/menu/menu.component";
 import { CreateEmojiForm } from "./create-emoji-form.component";
 import { formatCount, plural } from "@common/utils";
+import PlusIcon from "/public/assets/icons/plus.svg";
+import HashTagIcon from "/public/assets/icons/hash.svg";
+import SpeakerIcon from "/public/assets/icons/speaker.svg";
 import ChevronIcon from "/public/assets/icons/chevron.svg";
 import EmojiIcon from "/public/assets/icons/emoji.svg";
 
@@ -236,7 +236,7 @@ export function Channels({ channels = [], server }: ChannelsListProps) {
             </h2>
             <button
               onClick={open}
-              className="hover:bg-green-500 hover:text-gray-100 p-1 rounded-[50%] transition-[background-color,color] duration-300"
+              className="hover:bg-green-600 hover:text-white-0 p-1 rounded-[50%] transition-[background-color,color] duration-300"
             >
               <span className="sr-only">Create channel</span>
               <span aria-hidden>
@@ -261,7 +261,7 @@ export function Channels({ channels = [], server }: ChannelsListProps) {
                       id="channel-type-text"
                       label="Text"
                       Icon={<HashTagIcon />}
-                      description="In text channel you can chat with others"
+                      description="You can chat with others"
                     />
                     <FormRadioField
                       value="Voice"
@@ -269,7 +269,7 @@ export function Channels({ channels = [], server }: ChannelsListProps) {
                       id="channel-type-voice"
                       label="Voice"
                       Icon={<SpeakerIcon />}
-                      description="In voice channel you can talk with others"
+                      description="You can talk with others"
                     />
                   </fieldset>
                   <FormField

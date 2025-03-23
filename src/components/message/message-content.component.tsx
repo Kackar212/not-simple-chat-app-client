@@ -23,13 +23,13 @@ import { editMessage as editMessageMutation } from "@common/api";
 import {
   MessageEmbed,
   MessageWithBaseUser,
+  Poll as PollEntity,
   Reaction as ReactionEntity,
 } from "@common/api/schemas/message.schema";
 import { useSafeContext } from "@common/hooks";
 import { authContext } from "@common/auth/auth.context";
 import { usePopover } from "@components/popover/use-popover.hook";
 import { Link } from "@components/link/link.component";
-import { PlusIcon } from "@components/icons";
 import { useMarkdown } from "@common/marked/use-markdown.hook";
 import { Reaction } from "./reaction.component";
 import { useQueryClient } from "@tanstack/react-query";
@@ -37,8 +37,9 @@ import { EmojiPicker } from "@components/emoji-picker/emoji-picker.component";
 import { AttachmentType } from "@common/enums/attachment-type.enum";
 import { QueryKey } from "@common/constants";
 import { chatContext } from "@components/chat/chat.context";
-import { Direction } from "@common/api/hooks";
-import { getQueryClient } from "@/app/get-query-client";
+import CancelIcon from "/public/assets/icons/close.svg";
+import { FormRadioField } from "@components/form-field/form-radio-field.component";
+import { Poll } from "@components/poll/poll.component";
 
 interface MessageContentProps {
   id: number;
@@ -51,7 +52,6 @@ interface MessageContentProps {
   editedAt: string | null;
   embeds: MessageEmbed[];
   isSubMessage?: boolean;
-  setIsHidden?: Dispatch<SetStateAction<boolean>>;
   channelId: number;
   isMouseOver: boolean;
   isEdited: boolean;
@@ -63,13 +63,12 @@ interface MessageContentProps {
   setMessageReference: () => void;
   jumpTo: (e: MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void;
   withActions?: boolean;
+  poll: PollEntity | null;
 }
 
 const inviteRegexp = new RegExp(
   `http(s)?:\/\/${process.env.NEXT_PUBLIC_APP_URL}\/invite\/(?<inviteId>.*)`
 );
-
-const escapeHtml = () => {};
 
 const EditMessageSchema = z.object({
   editMessage: z
@@ -102,6 +101,7 @@ export function MessageContent({
   reactions,
   editedAt,
   embeds,
+  poll,
 }: MessageContentProps) {
   const isOptimistic = type === MessageType.Optimistic;
   const queryClient = useQueryClient();
@@ -310,7 +310,7 @@ export function MessageContent({
                   }
                 >
                   <span className="sr-only">Unpin message</span>
-                  <PlusIcon className="rotate-45 size-4" aria-hidden />
+                  <CancelIcon className="rotate-45 size-4" aria-hidden />
                 </button>
               </div>
             )}
@@ -324,6 +324,7 @@ export function MessageContent({
               {...attachment}
             />
           ))}
+          {poll && <Poll {...poll} messageId={id} />}
           <div className="flex flex-col">
             {embeds.map((embed, index) => {
               const { type, url, id: embedId } = embed;

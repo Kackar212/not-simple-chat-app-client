@@ -42,6 +42,31 @@ const EmbedSchema = z.discriminatedUnion("type", [
   EmbedLinkSchema,
 ]);
 
+export const PollType = {
+  Default: "Poll",
+  Quiz: "Quiz",
+} as const;
+
+export const AnswerSchema = z.object({
+  answer: z.string().min(3).max(300),
+  isCorrectAnswer: z.boolean().nullable().optional(),
+  id: z.number().int(),
+});
+
+export const UserAnswerSchema = z.object({
+  userId: z.number().int(),
+  pollAnswerId: z.number().int(),
+  pollAnswer: AnswerSchema,
+});
+
+export const PollSchema = z.object({
+  question: z.string().min(3).max(300),
+  answers: AnswerSchema.array(),
+  id: z.number().int(),
+  type: z.nativeEnum(PollType),
+  pollUserAnswers: UserAnswerSchema.array(),
+});
+
 export const MessageSchema = z.object({
   id: idSchema,
   isDeleted: z.boolean().optional(),
@@ -77,6 +102,7 @@ export const MessageSchema = z.object({
     })
     .optional()
     .nullable(),
+  poll: PollSchema.nullable(),
 });
 
 export const MessageWithBaseUserSchema = MessageSchema.merge(
@@ -106,3 +132,6 @@ export type MessagesResponseWithCursor = z.infer<
 >;
 export type Message = z.infer<typeof MessageSchema>;
 export type MessageEmbed = z.infer<typeof EmbedSchema>;
+export type Poll = z.infer<typeof PollSchema>;
+export type Answer = z.infer<typeof AnswerSchema>;
+export type UserAnswer = z.infer<typeof UserAnswerSchema>;

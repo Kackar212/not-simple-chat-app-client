@@ -21,6 +21,7 @@ import { useModal } from "@components/modal/use-modal.hook";
 import { MemberProfile } from "@components/member-profile/member-profile.component";
 import { twMerge } from "tailwind-merge";
 import { AvatarSize } from "@common/constants";
+import CancelIcon from "/public/assets/icons/close.svg";
 
 interface FriendProps {
   friend: BasicUser;
@@ -184,7 +185,7 @@ export function Friend({
             className="rounded-[50%] p-0 items-center justify-center bg-black-630/100 min-w-10 size-10"
           >
             <span className="sr-only">Cancel request</span>
-            <PlusIcon className="rotate-45 stroke-white-500 scale-90" />
+            <CancelIcon className="stroke-white-500 scale-90" />
           </Button>
         )}
         {!isInvited && isPending && (

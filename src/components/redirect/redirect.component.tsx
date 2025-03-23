@@ -8,7 +8,7 @@ interface RedirectProps {
 
 export function Redirect({ isRedirecting }: RedirectProps) {
   return (
-    <div role="alert" className="text-white-500 flex justify-center">
+    <div role="polite" className="text-white-500 flex justify-center">
       {isRedirecting && (
         <span className="flex gap-2">
           Redirecting <Loader />

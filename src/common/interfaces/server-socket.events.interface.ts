@@ -3,7 +3,7 @@ import { DirectMessageChannel } from "@common/api/schemas/direct-message-channel
 import { CustomEmoji } from "@common/api/schemas/emoji.schema";
 import { Friend } from "@common/api/schemas/friend.schema";
 import { Member } from "@common/api/schemas/member.schema";
-import { Message } from "@common/api/schemas/message.schema";
+import { Message, UserAnswer } from "@common/api/schemas/message.schema";
 import { ChannelWithServer } from "@common/api/schemas/server.schema";
 import { User } from "@common/api/schemas/user.schema";
 import {
@@ -98,4 +98,5 @@ export interface ServerSocketEvents {
     count: number;
   }) => void;
   emoji: (emoji: CustomEmoji) => void;
+  pollAnswer: (pollAnswer: UserAnswer & { messageId: number }) => void;
 }

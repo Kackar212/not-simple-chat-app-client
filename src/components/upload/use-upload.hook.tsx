@@ -1,7 +1,12 @@
 import { AttachmentType } from "@common/enums/attachment-type.enum";
 import { getFileSizeWithUnit } from "@common/utils";
 import { FormEvent, useCallback, useRef, useState } from "react";
-import { get, useFormContext } from "react-hook-form";
+import {
+  FieldValues,
+  get,
+  useFormContext,
+  UseFormReturn,
+} from "react-hook-form";
 import { mapFileToHistoryFile } from "./use-upload.utils";
 import { HistoryFile } from "./history-file.interface";
 
@@ -15,6 +20,7 @@ export interface UseUploadProps<CustomData extends Record<string, unknown>> {
     files: HistoryFile<CustomData>[];
     size: number;
   }) => void;
+  formContext?: UseFormReturn<FieldValues, any, undefined>;
 }
 
 export function useUpload<CustomData extends Record<string, unknown>>({
@@ -24,15 +30,16 @@ export function useUpload<CustomData extends Record<string, unknown>>({
   useSchema = false,
   onError = () => {},
   onChange = () => {},
+  formContext,
 }: UseUploadProps<CustomData>) {
-  const formContext = useFormContext();
   const {
     register,
     setError,
+    setValue,
     resetField,
     clearErrors,
     formState: { errors },
-  } = formContext;
+  } = useFormContext() || formContext;
   const [history, setHistory] = useState<{
     files: HistoryFile<CustomData>[];
     size: number;
@@ -42,7 +49,6 @@ export function useUpload<CustomData extends Record<string, unknown>>({
   const isFileSelected = !!file;
   const isTooBig = useRef(false);
   const isFileTooBig = useRef(false);
-  const { trigger, setValue } = useFormContext();
 
   const transformFile = useCallback(
     async (file: File, customData: CustomData) => {

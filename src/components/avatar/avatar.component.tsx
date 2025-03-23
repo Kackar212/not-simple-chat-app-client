@@ -67,7 +67,7 @@ export function Avatar({
               rounded && "rounded-[50%]",
               className
             )}
-            placeholder="blur"
+            placeholder={placeholder ? "blur" : undefined}
             blurDataURL={placeholder ? placeholder : undefined}
             src={src}
             alt={alt}

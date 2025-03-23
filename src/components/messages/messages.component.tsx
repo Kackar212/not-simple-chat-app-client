@@ -13,7 +13,7 @@ export function Messages({ groupedMessages }: MessagesProps) {
   const {
     auth: { blacklist },
   } = useSafeContext(authContext);
-
+  console.log(groupedMessages);
   return groupedMessages.map((messages) => (
     <MessagesGroup
       key={messages.map(({ id }) => id).join()}

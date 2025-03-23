@@ -133,7 +133,7 @@ export function _plural(
   suffixes: Partial<Record<Intl.LDMLPluralRule, string>>,
   count: number
 ) {
-  const pluralRules = new Intl.PluralRules();
+  const pluralRules = new Intl.PluralRules("en-US");
   const pluralRule = pluralRules.select(count);
 
   if (pluralRule === "one") {

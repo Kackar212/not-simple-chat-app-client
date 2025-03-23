@@ -24,14 +24,9 @@ export function PreviewAttachment({
   height,
   update,
   remove,
-  open,
   customData: { isSpoiler },
   type,
-}: HistoryFile<{ isSpoiler: boolean }> & {
-  open: (file: HistoryFile<{ isSpoiler: boolean }>) => void;
-}) {
-  const fileRef = useRef(file);
-
+}: HistoryFile<{ isSpoiler: boolean }>) {
   const onClick = useCallback<MouseEventHandler<HTMLButtonElement>>(
     (e) => {
       e.preventDefault();
@@ -132,25 +127,6 @@ export function PreviewAttachment({
 
             return;
           }
-
-          open({
-            file,
-            name,
-            url,
-            size,
-            isImage,
-            isAudio,
-            isOther,
-            isVideo,
-            isText,
-            isGif,
-            width,
-            height,
-            update,
-            remove,
-            customData: { isSpoiler },
-            type,
-          });
         }}
       >
         <span className="text-ellipsis overflow-hidden whitespace-nowrap mt-auto">

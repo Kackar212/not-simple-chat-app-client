@@ -1,11 +1,13 @@
+import { FormEventHandler } from "react";
 import { get, useFormContext } from "react-hook-form";
 
 interface UseFormFieldProps {
   name: string;
   id?: string;
+  onChange?: FormEventHandler<HTMLInputElement>;
 }
 
-export function useFormField({ name, id }: UseFormFieldProps) {
+export function useFormField({ name, id, onChange }: UseFormFieldProps) {
   const {
     formState: { errors },
     register,
@@ -17,5 +19,11 @@ export function useFormField({ name, id }: UseFormFieldProps) {
   const hintId = `${inputId}-hint`;
   const error = get(errors, name);
 
-  return { error, errorId, id: inputId, hintId, registerProps: register(name) };
+  return {
+    error,
+    errorId,
+    id: inputId,
+    hintId,
+    registerProps: register(name, { onChange }),
+  };
 }

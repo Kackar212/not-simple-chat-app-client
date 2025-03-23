@@ -44,6 +44,7 @@ export function Message(message: MessageProps) {
     reactions,
     editedAt,
     embeds,
+    poll,
   } = message;
 
   const { openPinnedMessages, setMessageReference } =
@@ -336,7 +337,6 @@ export function Message(message: MessageProps) {
                     createdAt={createdAt}
                     attachments={attachments}
                     isCurrentUserAuthor={isCurrentUserAuthor}
-                    setIsHidden={setIsHidden}
                     isMouseOver={isMouseOver}
                     isEdited={isEdited}
                     isPinned={isPinned}
@@ -352,6 +352,7 @@ export function Message(message: MessageProps) {
                     reactions={reactions}
                     embeds={embeds}
                     jumpTo={jumpTo}
+                    poll={poll}
                   />
                 </div>
               </div>
@@ -381,6 +382,7 @@ export function Message(message: MessageProps) {
                 reactions={reactions}
                 embeds={embeds}
                 jumpTo={jumpTo}
+                poll={poll}
               />
             )}
           </div>

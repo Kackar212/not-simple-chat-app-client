@@ -26,8 +26,11 @@ export default async function InvitePage({ params }: InvitePageProps) {
   const {
     id,
     serverIcon,
+    iconPlaceholder,
     name: serverName,
-    _count: { members: membersCount },
+    membersCount,
+    onlineMembersCount,
+    offlineMembersCount,
     defaultChannel,
   } = data;
 
@@ -36,8 +39,11 @@ export default async function InvitePage({ params }: InvitePageProps) {
       serverIcon={serverIcon}
       serverName={serverName}
       membersCount={membersCount}
+      onlineMembersCount={onlineMembersCount}
+      offlineMembersCount={offlineMembersCount}
       serverId={id}
       channelId={defaultChannel.id}
+      iconPlaceholder={iconPlaceholder}
     />
   );
 }

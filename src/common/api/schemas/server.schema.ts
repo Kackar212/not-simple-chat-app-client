@@ -55,7 +55,9 @@ export const UserServerSchema = ServerSchema.merge(
 
 export const InviteServerSchema = BaseServerSchema.merge(
   z.object({
-    _count: z.object({ members: z.number().int() }),
+    membersCount: z.number().int(),
+    onlineMembersCount: z.number().int(),
+    offlineMembersCount: z.number().int(),
     defaultChannel: ChannelSchema,
   })
 );

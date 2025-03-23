@@ -31,4 +31,5 @@ export enum SocketEvent {
   Unblock = "unblock",
   Reaction = "reaction",
   Emoji = "emoji",
+  PollAnswer = "pollAnswer",
 }

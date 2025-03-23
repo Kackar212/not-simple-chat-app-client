@@ -10,9 +10,7 @@ import { useSafeContext } from "@common/hooks";
 import { socket, SocketEvent } from "@common/socket";
 import { Button } from "@components/button/button.component";
 import { FormField } from "@components/form-field/form-field.component";
-import { FormHeader } from "@components/form-header/form-header.component";
 import { Form } from "@components/form/form.component";
-import { PlusIcon } from "@components/icons";
 import { Member } from "@components/member/member.component";
 import { Modal } from "@components/modal/modal.component";
 import { useModal } from "@components/modal/use-modal.hook";
@@ -20,15 +18,14 @@ import { Sidebar } from "@components/sidebar/sidebar.component";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import UserIcon from "/public/assets/icons/user.svg";
 import { useQuery } from "@common/api/hooks/use-query.hook";
-import { FriendStatus } from "@common/enums/friend-status.enum";
 import { Avatar } from "@components/avatar/avatar.component";
 import { Loader } from "@components/loader/loader.component";
 import { z } from "zod";
 import { createConfig } from "@common/use-form.config";
 import { formatCount, plural } from "@common/utils";
-import { getQueryClient } from "@/app/get-query-client";
+import UserIcon from "/public/assets/icons/user.svg";
+import PlusIcon from "/public/assets/icons/plus.svg";
 
 interface MembersProps {
   users: Array<MemberEntity>;
@@ -138,7 +135,7 @@ export function Members({ users, server }: MembersProps) {
           </h2>
           <button
             aria-label="Invite user"
-            className="hover:bg-green-500 hover:text-gray-100 p-1 rounded-[50%] transition-[background-color,color] duration-300"
+            className="hover:bg-green-600 hover:text-white-0 p-1 rounded-[50%] transition-[background-color,color] duration-300"
             onClick={open}
           >
             <PlusIcon className="size-5" />

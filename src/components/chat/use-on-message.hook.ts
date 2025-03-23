@@ -131,11 +131,25 @@ export function useOnMessage({ user }: UseOnMessageProps) {
           if (
             isMessageSentByDifferentUser ||
             newMessage.type === MessageType.ReplyToPinnedMessage ||
-            newMessage.isSystemMessage
+            newMessage.isSystemMessage ||
+            newMessage.poll
           ) {
+            const optimisticMessages = firstPage.data.messages.filter(
+              (message) => message.type === MessageType.Optimistic
+            );
+            const normalMessages = firstPage.data.messages.filter(
+              (message) => message.type !== MessageType.Optimistic
+            );
+
             const updatedPage = {
               ...firstPage,
-              data: { messages: [newMessage, ...firstPage.data.messages] },
+              data: {
+                messages: [
+                  ...optimisticMessages,
+                  newMessage,
+                  ...normalMessages,
+                ],
+              },
             };
 
             return {

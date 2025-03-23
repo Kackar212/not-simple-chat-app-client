@@ -15,6 +15,7 @@ import {
   MessagesResponseWithCursor,
   MessagesResponseWithCursorSchema,
   MessageWithBaseUser,
+  PollType,
 } from "@common/api/schemas/message.schema";
 import { FriendStatus } from "@common/enums/friend-status.enum";
 import { Friend } from "./schemas/friend.schema";
@@ -69,6 +70,8 @@ export enum Endpoint {
   EditMessage = "channels/messages",
   Reactions = "channels/messages/reactions",
   DeleteAttachment = "channels/attachments/[attachmentId]",
+  CreatePoll = "channels/polls",
+  PollAnswers = "channels/polls/answers",
   InviteUser = "users/invite",
   AcceptInvite = "servers/[serverId]/members",
   DeclineInvite = "invite/member/decline",
@@ -232,6 +235,7 @@ const apiSuccess = {
     [HttpMethod.Delete]: "You successfully unblocked user!",
   },
   [Endpoint.Emojis]: "You created new emoji",
+  [Endpoint.CreatePoll]: "You created a poll",
 };
 
 export const signIn = query.create<
@@ -616,19 +620,16 @@ export const updateProfile = query.create<
 }));
 
 export const acceptInvitation = query.create<
-  { sessionId?: string; serverId: number },
+  { serverId: number },
   {},
   ApiError
->(({ sessionId, serverId }) => {
+>(({ serverId }) => {
   return {
     url: Endpoint.AcceptInvite,
     params: {
       serverId,
     },
     method: HttpMethod.Post,
-    cookies: {
-      [SESSION_COOKIE_NAME]: sessionId,
-    },
   };
 });
 
@@ -745,7 +746,7 @@ export const createMessage = query.create<
 >((data) => {
   const { attachments, message, channelId } = data;
 
-  const formData = attachments.reduce((formData, attachment, index) => {
+  const formData = attachments.reduce((formData, attachment) => {
     formData.append(
       `attachments`,
       new Blob([attachment.file], { type: attachment.file.type }),
@@ -772,15 +773,18 @@ export const createMessage = query.create<
   };
 });
 
-export const deleteAttachment = query.create<number, {}, ApiError>(
-  (attachmentId) => ({
-    url: Endpoint.DeleteAttachment,
-    params: {
-      attachmentId,
-    },
-    method: HttpMethod.Delete,
-  })
-);
+export const deleteAttachment = query.create<
+  { attachmentId: number; channelId: number },
+  {},
+  ApiError
+>(({ attachmentId, channelId }) => ({
+  url: Endpoint.DeleteAttachment,
+  params: {
+    attachmentId,
+  },
+  body: JSON.stringify({ channelId }),
+  method: HttpMethod.Delete,
+}));
 
 export const createDirectMessageChannel = query.create<
   { username: string },
@@ -880,6 +884,42 @@ export const getGifs = query.create<
   },
 }));
 
+export const createPoll = query.create<
+  {
+    question: string;
+    answers: Array<{ answer: string; isCorrectAnswer?: boolean | null }>;
+    channelId: number;
+    pollType: (typeof PollType)[keyof typeof PollType];
+  },
+  {},
+  ApiError
+>(({ question, answers, channelId, pollType }) => ({
+  url: Endpoint.CreatePoll,
+  body: JSON.stringify({
+    question,
+    answers,
+    channelId,
+    type: pollType,
+  }),
+  method: HttpMethod.Post,
+}));
+
+export const createUserAnswer = query.create<
+  {
+    answerId: number;
+    messageId: number;
+  },
+  {},
+  ApiError
+>(({ answerId, messageId }) => ({
+  url: Endpoint.PollAnswers,
+  body: JSON.stringify({
+    answerId,
+    messageId,
+  }),
+  method: HttpMethod.Post,
+}));
+
 export const mutations = {
   createServer,
   createEmoji,
@@ -907,6 +947,8 @@ export const mutations = {
   signUp,
   activateAccount,
   updateProfile,
+  createPoll,
+  createUserAnswer,
 } as const;
 
 export const queries = {

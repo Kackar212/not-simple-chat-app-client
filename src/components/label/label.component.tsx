@@ -1,4 +1,5 @@
 import { HTMLProps } from "react";
+import { twMerge } from "tailwind-merge";
 
 export function Label({
   className,
@@ -6,8 +7,8 @@ export function Label({
   children,
 }: HTMLProps<HTMLLabelElement>) {
   return (
-    <div className="flex items-center gap-2 peer-[aria-invalid='true']:text-red-500 mb-1">
-      <label htmlFor={htmlFor} className={className}>
+    <div className="flex items-center gap-2 peer-[aria-invalid='true']:text-red-500">
+      <label htmlFor={htmlFor} className={twMerge("mb-1", className)}>
         {children}
       </label>
     </div>

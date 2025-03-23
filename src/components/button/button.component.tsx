@@ -5,9 +5,9 @@ import {
 } from "react";
 import { Loader } from "../loader/loader.component";
 import { twMerge } from "tailwind-merge";
-import { PlusIcon } from "@components/icons";
 import { CheckIcon } from "@components/icons/check.icon";
 import { QueryResult } from "@common/hooks/query";
+import CloseIcon from "/public/assets/icons/close.svg";
 
 interface ButtonProps
   extends DetailedHTMLProps<
@@ -51,7 +51,7 @@ export function Button({
       >
         {children}
         {isSuccess && <CheckIcon aria-hidden className="size-4" />}
-        {isError && <PlusIcon aria-hidden className="size-4 rotate-45" />}
+        {isError && <CloseIcon aria-hidden className="size-4 rotate-45" />}
         {isLoading && <Loader aria-hidden className="size-4" />}
       </button>
       <span aria-live="polite" className="sr-only">

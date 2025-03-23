@@ -1,5 +1,5 @@
-import { ModalProps, ModalRoot, WithoutSsr } from "./modal-root.component";
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { ModalProps, ModalRoot } from "./modal-root.component";
+import { useLayoutEffect, useRef } from "react";
 
 export function Modal({ children, ...props }: ModalProps) {
   const container = useRef<HTMLElement | null>(null);
