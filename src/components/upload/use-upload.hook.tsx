@@ -1,4 +1,3 @@
-import { AttachmentType } from "@common/enums/attachment-type.enum";
 import { getFileSizeWithUnit } from "@common/utils";
 import { FormEvent, useCallback, useRef, useState } from "react";
 import {

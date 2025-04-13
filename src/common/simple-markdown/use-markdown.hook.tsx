@@ -1,4 +1,4 @@
-import { builder } from "@common/marked";
+import { builder } from "@common/simple-markdown";
 import { useMemo, useRef } from "react";
 import { translateEmojis } from "@common/emojis";
 import { MessageType } from "@common/enums/message-type.enum";

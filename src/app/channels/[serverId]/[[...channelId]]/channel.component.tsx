@@ -15,6 +15,7 @@ import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { NotFound } from "@components/not-found/not-found.component";
 import { QueryKey } from "@common/constants";
 import Loading from "@/app/loading";
+import { Redirect } from "@components/redirect/redirect.component";
 
 interface ServerPageProps {
   params: {
@@ -26,7 +27,7 @@ interface ServerPageProps {
 
 export default function Channel({ params, messages }: ServerPageProps) {
   const { serverId } = params;
-  const channelId = Number(params.channelId[0]);
+  const channelId = Number(params.channelId?.[0]);
 
   const queryClient = useQueryClient();
 
@@ -189,8 +190,16 @@ export default function Channel({ params, messages }: ServerPageProps) {
     );
   }
 
-  if (!channel) {
+  if (!channel && !firstTextChannel) {
     return <NotFound />;
+  }
+
+  if (!channel && firstTextChannel) {
+    return (
+      <div className="flex size-full justify-center items-center">
+        <Redirect isRedirecting={true} />;
+      </div>
+    );
   }
 
   const { channels } = server!;
@@ -204,6 +213,10 @@ export default function Channel({ params, messages }: ServerPageProps) {
         </p>
       </div>
     );
+  }
+
+  if (!channel) {
+    return;
   }
 
   return (

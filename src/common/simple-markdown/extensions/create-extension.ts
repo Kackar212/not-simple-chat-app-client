@@ -6,6 +6,7 @@ import SimpleMarkdown, {
   SingleASTNode,
   State,
 } from "@khanacademy/simple-markdown";
+import { ReactNode } from "react";
 
 type Token = SingleASTNode & { content: string | SingleASTNode[] };
 
@@ -14,7 +15,6 @@ export interface CreateSimpleMarkdownExtensionProps<
 > {
   name: string;
   level: "inline" | "block";
-  start: string | string[];
   tokenRegexp: RegExp;
   order?: number;
   match?: (source: string, state: State) => RegExpExecArray | null;
@@ -23,16 +23,19 @@ export interface CreateSimpleMarkdownExtensionProps<
     nestedParse: Parser,
     state: State
   ) => Omit<ExtensionToken, "type"> | unknown[];
+  html?: (node: SingleASTNode) => string;
+  react?: () => ReactNode;
 }
 
 export const createSimpleMarkdownExtension = <ExtensionToken extends Token>({
   name,
   level,
   order = SimpleMarkdown.defaultRules.text.order,
-  start,
   tokenRegexp,
   parse,
   match,
+  react = () => "",
+  html = () => "",
 }: CreateSimpleMarkdownExtensionProps<ExtensionToken>) => {
   return {
     tokenRegexp,
@@ -43,10 +46,6 @@ export const createSimpleMarkdownExtension = <ExtensionToken extends Token>({
         : tokenRegexp?.exec(source);
     },
     parse(capture: Capture, nestedParse: Parser, state: State) {
-      const type = name;
-
-      const previousInlineState = state.inline;
-
       const markdownParse =
         level === "inline"
           ? SimpleMarkdown.parseInline
@@ -65,8 +64,11 @@ export const createSimpleMarkdownExtension = <ExtensionToken extends Token>({
       }
 
       return {
+        type: name,
         ...result,
       };
     },
+    react,
+    html,
   } as const;
 };

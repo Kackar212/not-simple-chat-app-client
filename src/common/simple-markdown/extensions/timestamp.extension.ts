@@ -1,4 +1,3 @@
-import { Token, Tokens } from "marked";
 import { createSimpleMarkdownExtension } from "./create-extension";
 import { format, formatRelative } from "date-fns";
 import SimpleMarkdown from "@khanacademy/simple-markdown";
@@ -20,7 +19,6 @@ export const createTimestampExtension = () =>
   createSimpleMarkdownExtension({
     name: NAME,
     level: "inline",
-    start: "<t:",
     order: SimpleMarkdown.defaultRules.text.order - 0.75,
     tokenRegexp,
     parse(capture) {

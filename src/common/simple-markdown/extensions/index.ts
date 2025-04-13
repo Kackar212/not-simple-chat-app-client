@@ -27,8 +27,13 @@ import {
   DirectMessageRequest as _DirectMessageRequest,
   NAME as DIRECT_MESSAGE_REQUEST,
 } from "./direct-message-request.extension";
+import {
+  mention,
+  Mention as _Mention,
+  NAME as MENTION,
+} from "./mention.extension";
 
-export declare namespace MarkedExtensionToken {
+export declare namespace MarkdownExtensionToken {
   interface Emoji extends _Emoji {}
   interface Spoiler extends _Spoiler {}
   interface SubText extends _SubText {}
@@ -38,6 +43,7 @@ export declare namespace MarkedExtensionToken {
   interface Timestamp extends _Timestamp {}
   interface Emoticon extends _Emoticon {}
   interface DirectMessageRequest extends _DirectMessageRequest {}
+  interface Mention extends _Mention {}
 }
 
 export const CustomTokenType = {
@@ -50,6 +56,7 @@ export const CustomTokenType = {
   Timestamp: TIMESTAMP,
   Emoticon: EMOTICON,
   DirectMessageChannel: DIRECT_MESSAGE_REQUEST,
+  Mention: MENTION,
 } as const;
 
 export {
@@ -62,4 +69,5 @@ export {
   timestamp,
   emoticon,
   directMessageRequest,
+  mention,
 };

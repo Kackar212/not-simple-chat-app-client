@@ -1,17 +1,9 @@
-import { queries } from "@common/api";
+import { ApiError, queries, QueryResponse } from "@common/api";
 import { useQuery } from "@common/api/hooks/use-query.hook";
 import { QueryKey } from "@common/constants";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import Image from "next/image";
 import {
   CellMeasurerCache,
   createMasonryCellPositioner,
@@ -27,62 +19,41 @@ import {
 } from "./gif-picker.constants";
 import { GifSkeleton } from "@components/skeleton/gif-skeleton.component";
 import { GifPickerCategory } from "./gif-picker-category.component";
-import { getQueryClient } from "@/app/get-query-client";
+import { createPlaceholderGif, debounce } from "./gif-picker.helpers";
 
 interface GifPickerRootProps {
-  setSearchTerm: Dispatch<SetStateAction<string>>;
   searchTerm: string;
   onSelect: (tenorGif: TenorGif) => void;
 }
 
-function debounce(callback: (...args: any[]) => void) {
-  let debounceId = -1;
+const fakeGifs = Array.from({ length: 6 }).map(() => createPlaceholderGif());
 
-  return (...args: any[]) => {
-    if (debounceId !== -1) {
-      window.clearTimeout(debounceId);
-    }
-
-    debounceId = window.setTimeout(() => {
-      callback(...args);
-
-      debounceId = -1;
-    }, 250);
-  };
-}
-
-const createPlaceholderGif = (width: number, height: number): TenorGif => {
-  const id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-
-  return {
-    content_description: "",
-    content_description_source: "",
-    created: 0,
-    flags: [],
-    hasaudio: false,
-    id: `${id}`,
-    itemurl: "",
-    media_formats: {
-      tinymp4: {
-        dims: [width, height],
-        url: "",
-        size: 0,
-        preview: "",
-        duration: 0,
-      },
-    },
-    tags: [],
-    title: "",
-    url: "",
-    isPlaceholder: true,
-  };
+const page: QueryResponse<
+  {
+    next: string;
+    results: TenorGif[];
+  },
+  ApiError
+> = {
+  error: null,
+  status: {
+    isError: false,
+    isSuccess: true,
+    errorMessage: "",
+    successMessage: "",
+  },
+  data: {
+    results: fakeGifs,
+    next: "",
+  },
 };
 
-export function GifPickerRoot({
-  setSearchTerm,
-  searchTerm,
-  onSelect,
-}: GifPickerRootProps) {
+export const initialData = {
+  pageParams: ["0"],
+  pages: [page],
+};
+
+export function GifPickerRoot({ searchTerm, onSelect }: GifPickerRootProps) {
   const { data, isLoading } = useQuery({
     queryKey: QueryKey.GifCategories,
     queryFn: () => queries.getGifCategories(),
@@ -94,7 +65,6 @@ export function GifPickerRoot({
     isLoading: isLoadingGifs,
     isFetching,
     isFetchingNextPage,
-    isPending,
     fetchNextPage,
     hasNextPage,
     refetch,
@@ -105,35 +75,15 @@ export function GifPickerRoot({
     enabled: false,
     initialPageParam: "0",
     getNextPageParam(lastPage) {
-      if (lastPage.data?.next === "") {
+      const next = lastPage.data?.next;
+
+      if (next === "") {
         return;
       }
 
       return lastPage.data?.next;
     },
-    initialData: {
-      pageParams: ["0"],
-      pages: [
-        {
-          error: null,
-          status: {
-            isError: false,
-            isSuccess: true,
-            errorMessage: "",
-            successMessage: "",
-          },
-          data: {
-            results: Array.from({ length: 6 }).map(() =>
-              createPlaceholderGif(
-                Math.floor(Math.random() * (400 - 206.5) + 206.5),
-                Math.floor(Math.random() * (400 - 206.5) + 206.5)
-              )
-            ),
-            next: "",
-          },
-        },
-      ],
-    },
+    initialData,
   });
 
   const refetchGifs = useMemo(() => debounce(() => refetch()), [refetch]);
@@ -231,7 +181,6 @@ export function GifPickerRoot({
               <GifPickerCategory
                 key={name}
                 searchTerm={searchterm}
-                setSearchTerm={setSearchTerm}
                 image={image}
               />
             ))}

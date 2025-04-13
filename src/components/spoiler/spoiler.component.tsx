@@ -1,24 +1,19 @@
+import { Key } from "@common/constants";
 import {
   KeyboardEvent,
   KeyboardEventHandler,
   PropsWithChildren,
   useCallback,
+  useId,
   useRef,
   useState,
 } from "react";
 import { twMerge } from "tailwind-merge";
 
-const Key = {
-  Enter: "Enter",
-  Space: "Space",
-};
-
 // I used span instead of button because button can't be truly inline so it would not be possible to use it inside inline context.
 export function Spoiler({ children }: PropsWithChildren<{}>) {
   const [isHidden, setIsHidden] = useState<boolean>(true);
-  const { current: id } = useRef(
-    `message-spoiler-${Math.trunc(Math.random() * 9999999)}`
-  );
+  const id = useId();
 
   const showSpoiler = useCallback(() => {
     setIsHidden((isHidden) => !isHidden);

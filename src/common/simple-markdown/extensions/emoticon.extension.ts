@@ -1,9 +1,8 @@
-import { Tokens, TokenizerAndRendererExtension } from "marked";
 import {
   createSimpleMarkdownExtension,
   CreateSimpleMarkdownExtensionProps,
 } from "./create-extension";
-import { Capture, ParseFunction } from "@khanacademy/simple-markdown";
+import { Capture } from "@khanacademy/simple-markdown";
 import { asciiRegexp } from "@common/emojis";
 import { EmojiMemoryStorage } from "@common/emojis/emojis.storage";
 
@@ -20,7 +19,6 @@ export interface Emoticon {
 interface CreateEmojiExtensionProps {
   name?: string;
   emojiRegexp?: RegExp;
-  start?: string | string[];
   parse?: CreateSimpleMarkdownExtensionProps<Emoticon>["parse"];
   match?: CreateSimpleMarkdownExtensionProps<Emoticon>["match"];
 }
@@ -42,14 +40,12 @@ const defaultParse = (capture: Capture) => {
 
 export const createEmojiExtension = ({
   emojiRegexp = defaultEmojiRegexp,
-  start = "",
   name = NAME,
   parse = defaultParse,
   match,
 }: CreateEmojiExtensionProps = {}) =>
   createSimpleMarkdownExtension({
     name,
-    start,
     tokenRegexp: emojiRegexp,
     level: "inline",
     parse,

@@ -1,29 +1,46 @@
-import Image from "next/image";
 import { COLUMN_WIDTH } from "./gif-picker.constants";
-import { Dispatch, SetStateAction, useState } from "react";
+import { MouseEventHandler, useCallback, useState } from "react";
 import { GifSkeleton } from "@components/skeleton/gif-skeleton.component";
+import { useFormContext } from "react-hook-form";
+import Image from "next/image";
 
 interface GifPickerCategory {
   searchTerm: string;
-  setSearchTerm: Dispatch<SetStateAction<string>>;
   image: string;
 }
 
-export function GifPickerCategory({
-  searchTerm,
-  image,
-  setSearchTerm,
-}: GifPickerCategory) {
+const style = { width: COLUMN_WIDTH };
+const categoryStyle = { width: COLUMN_WIDTH, height: 112 };
+
+export function GifPickerCategory({ searchTerm, image }: GifPickerCategory) {
   const [isLoading, setIsLoading] = useState(true);
+
+  const { setValue } = useFormContext();
+
+  const onClick: MouseEventHandler<HTMLButtonElement> = useCallback(
+    ({ currentTarget }) => {
+      const {
+        dataset: { searchTerm },
+      } = currentTarget;
+
+      if (!searchTerm) {
+        return;
+      }
+
+      setValue("searchTerm", searchTerm);
+    },
+    [setValue]
+  );
+
+  const onLoad = useCallback(() => setIsLoading(false), []);
 
   return (
     <button
       key={searchTerm}
       className="h-28 relative rounded-md border-0 cursor-pointer overflow-hidden"
-      onClick={() => {
-        setSearchTerm(searchTerm);
-      }}
-      style={{ width: COLUMN_WIDTH }}
+      onClick={onClick}
+      data-search-term={searchTerm}
+      style={style}
       type="button"
     >
       {isLoading && (
@@ -38,8 +55,9 @@ export function GifPickerCategory({
         height={112}
         alt={searchTerm}
         className="object-cover"
-        style={{ width: COLUMN_WIDTH, height: 112 }}
-        onLoad={() => setIsLoading(false)}
+        unoptimized={true}
+        style={categoryStyle}
+        onLoad={onLoad}
       />
       <div
         aria-hidden

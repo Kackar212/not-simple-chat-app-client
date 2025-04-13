@@ -541,6 +541,7 @@ export const getMessages = query.create<
       isPinned,
     },
     parse(data) {
+      console.log(data);
       return MessagesResponseWithCursorSchema.parse(data);
     },
   };
@@ -739,7 +740,7 @@ export const createMessage = query.create<
     message: string;
     type?: "direct-message" | "message";
     attachments: HistoryFile<{ isSpoiler: boolean }>[];
-    messageReference?: MessageWithBaseUser;
+    messageReference?: Message["messageReference"];
   },
   Message,
   ApiError
@@ -920,6 +921,22 @@ export const createUserAnswer = query.create<
   method: HttpMethod.Post,
 }));
 
+export const removeUserAnswer = query.create<
+  {
+    answerId: number;
+    messageId: number;
+  },
+  {},
+  ApiError
+>(({ answerId, messageId }) => ({
+  url: Endpoint.PollAnswers,
+  body: JSON.stringify({
+    answerId,
+    messageId,
+  }),
+  method: HttpMethod.Delete,
+}));
+
 export const mutations = {
   createServer,
   createEmoji,
@@ -949,6 +966,7 @@ export const mutations = {
   updateProfile,
   createPoll,
   createUserAnswer,
+  removeUserAnswer,
 } as const;
 
 export const queries = {

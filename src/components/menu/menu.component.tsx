@@ -26,6 +26,7 @@ interface MenuProps {
   offset?: OffsetOptions;
   className?: string;
   tooltip?: string;
+  canDisplayTooltip?: boolean;
 }
 
 const defaultOpenButton = {
@@ -49,6 +50,7 @@ export function Menu({
   fullWidth,
   className,
   tooltip = "More",
+  canDisplayTooltip = true,
 }: MenuProps) {
   const {
     isOpen,
@@ -108,6 +110,7 @@ export function Menu({
         <PopoverTrigger
           data-tooltip-id="tooltip"
           data-tooltip-content={tooltip}
+          data-tooltip-hidden={!canDisplayTooltip}
           aria-haspopup
           aria-expanded={isOpen}
           data-id={id}

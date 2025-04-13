@@ -30,7 +30,7 @@ import { useSafeContext } from "@common/hooks";
 import { authContext } from "@common/auth/auth.context";
 import { usePopover } from "@components/popover/use-popover.hook";
 import { Link } from "@components/link/link.component";
-import { useMarkdown } from "@common/marked/use-markdown.hook";
+import { useMarkdown } from "@common/simple-markdown/use-markdown.hook";
 import { Reaction } from "./reaction.component";
 import { useQueryClient } from "@tanstack/react-query";
 import { EmojiPicker } from "@components/emoji-picker/emoji-picker.component";
@@ -38,7 +38,6 @@ import { AttachmentType } from "@common/enums/attachment-type.enum";
 import { QueryKey } from "@common/constants";
 import { chatContext } from "@components/chat/chat.context";
 import CancelIcon from "/public/assets/icons/close.svg";
-import { FormRadioField } from "@components/form-field/form-radio-field.component";
 import { Poll } from "@components/poll/poll.component";
 
 interface MessageContentProps {
@@ -229,7 +228,7 @@ export function MessageContent({
             {isSubMessage && (
               <span
                 className={twMerge(
-                  "-ml-0.5 mr-0.5 absolute top-0 -left-1 lg:left-0 h-[1.375rem] leading-[1.375rem] opacity-0 text-[0.6875rem] w-[42px] lg:w-14 text-gray-300 flex items-center justify-center",
+                  "-ml-0.5 mr-0.5 absolute top-0 -left-1 lg:left-0 h-full leading-[1.375rem] opacity-0 text-[0.6875rem] w-[42px] lg:w-14 text-gray-300 flex items-center justify-center",
                   isMouseOver && "opacity-100"
                 )}
               >
@@ -362,7 +361,7 @@ export function MessageContent({
                       width={width}
                       height={height}
                       name={url}
-                      originalName={url}
+                      originalName={"this embedded"}
                       size={1}
                       originalUrl={originalUrl || url}
                       placeholder={placeholder}
@@ -423,7 +422,7 @@ export function MessageContent({
                       height={height}
                       name={url}
                       poster={poster}
-                      originalName={url}
+                      originalName={"this embedded"}
                       size={1}
                       originalUrl={originalUrl || url}
                       isEmbed

@@ -22,7 +22,7 @@ export function MessageUpload<Type extends "file">({
   ...attrs
 }: UploadProps<Type, { isSpoiler: boolean }>) {
   return (
-    <div className="flex justify-center px-2.5 py-0 absolute top-3 z-10">
+    <div className="flex justify-center px-2.5 py-0 absolute top-3 z-[1000]">
       <Input
         type="file"
         id={id}

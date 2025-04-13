@@ -59,7 +59,7 @@ export function ChannelListItem({
   return (
     <li className="flex flex-col justify-center text-white-500">
       <Link
-        className="font-[400] text-gray-360 w-full flex items-center gap-2 px-2 aria-[current=page]:bg-gray-240/60 aria-[current=page]:font-[500] aria-[current=page]:text-white-500 hover:bg-gray-260/30 hover:text-gray-150 py-1 rounded-sm"
+        className="font-[400] text-gray-360 w-full flex items-center gap-2 px-2 aria-[current=page]:bg-gray-240/60 aria-[current=page]:font-[500] aria-[current=page]:text-white-500 hover:bg-gray-240/30 hover:text-gray-150 py-1 rounded-sm"
         href={`/channels/${server.id}/${channel.id}`}
         onClick={join}
       >

@@ -1,4 +1,3 @@
-import { Token, TokenizerAndRendererExtension } from "marked";
 import { createSimpleMarkdownExtension } from "./create-extension";
 import { SingleASTNode } from "@khanacademy/simple-markdown";
 
@@ -13,7 +12,6 @@ export const createSpoilerExtension = () =>
   createSimpleMarkdownExtension<Spoiler>({
     name: NAME,
     level: "inline",
-    start: "||",
     tokenRegexp: /^\|\|([\s\S]+?)\|\|/,
   } as const);
 

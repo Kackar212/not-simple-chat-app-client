@@ -54,6 +54,7 @@ export const createServerEntityMock = (
       url: "",
       usesLeft: 1,
     },
+    roles: [],
     ...server,
   };
 };
@@ -85,6 +86,9 @@ export const createMemberEntityMock = (member: Partial<Member> = {}) => ({
   kickedOutUntil: null,
   serverId: 1,
   isOwner: false,
+  roleIds: [],
+  color: "rgb(220,220,220)",
+  roles: [],
   profile: {
     ...user,
     memberId: 1,

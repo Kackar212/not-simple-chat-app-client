@@ -12,7 +12,7 @@ import {
   useInteractions,
   useRole,
 } from "@floating-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export interface UsePopoverProps extends UseFloatingOptions {
   openOnFocus?: boolean;
@@ -34,7 +34,7 @@ export function usePopover(
   const isControlled = typeof options.isOpen !== "undefined";
   const isOpen = isControlled ? options.isOpen : isOpenUncontrolled;
 
-  const { refs, floatingStyles, context, ...rest } = useFloating({
+  const { refs, floatingStyles, context, ...useFloatingResult } = useFloating({
     whileElementsMounted: autoUpdate,
     open: isOpen,
     onOpenChange: (isOpen: boolean) => {
@@ -82,15 +82,27 @@ export function usePopover(
     focus,
   ]);
 
-  return {
-    context,
-    refs,
-    floatingStyles,
-    isOpen,
-    setIsOpen,
-    getReferenceProps,
-    getFloatingProps,
-    ...rest,
-    ...popoverContext,
-  };
+  return useMemo(
+    () => ({
+      context,
+      refs,
+      floatingStyles,
+      isOpen,
+      setIsOpen,
+      getReferenceProps,
+      getFloatingProps,
+      ...useFloatingResult,
+      ...popoverContext,
+    }),
+    [
+      context,
+      floatingStyles,
+      getFloatingProps,
+      getReferenceProps,
+      isOpen,
+      popoverContext,
+      refs,
+      useFloatingResult,
+    ]
+  );
 }

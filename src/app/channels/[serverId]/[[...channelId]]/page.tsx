@@ -16,9 +16,10 @@ interface LayoutProps {
 export default async function Layout({ params }: LayoutProps) {
   const cookieStore = await cookies();
   const routeParams = await params;
+  const channelId = routeParams.channelId?.[0];
 
   const messages = getMessages({
-    channelId: Number(routeParams.channelId[0]),
+    channelId: Number(channelId),
     sessionId: cookieStore.get("connect.sid")?.value,
   });
 

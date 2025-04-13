@@ -1,4 +1,3 @@
-import { Token } from "marked";
 import { createSimpleMarkdownExtension } from "./create-extension";
 import SimpleMarkdown from "@khanacademy/simple-markdown";
 
@@ -16,7 +15,6 @@ export const createDirectMessageRequestExtension = () =>
   createSimpleMarkdownExtension<DirectMessageRequest>({
     name: NAME,
     level: "inline",
-    start: "[Request:",
     tokenRegexp: /^\[Request:(?<requestId>.*)\]/i,
     order: SimpleMarkdown.defaultRules.codeBlock.order,
     match(source, state) {

@@ -1,6 +1,10 @@
 import { Blacklist } from "@common/api/schemas/blacklist.schema";
 import { CustomEmoji } from "@common/api/schemas/emoji.schema";
-import { Member, MemberWithoutUser } from "@common/api/schemas/member.schema";
+import {
+  CurrentUserProfile,
+  Member,
+  MemberWithoutUser,
+} from "@common/api/schemas/member.schema";
 import { Role } from "@common/api/schemas/role.schema";
 import { User } from "@common/api/schemas/user.schema";
 import { AuthAction } from "@common/auth/auth-action.enum";
@@ -42,13 +46,8 @@ export type AuthActions =
   | AddEmoji
   | SetPendingFriends;
 
-export type Auth = {
+export type Auth = CurrentUserProfile & {
   isLoggedIn: boolean;
-  member: Member;
-  user: User;
-  blacklist: Blacklist;
-  emojis: CustomEmoji[];
-  pendingFriends: number;
 };
 
 export type AuthContext = {

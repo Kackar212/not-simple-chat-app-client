@@ -11,6 +11,7 @@ import { CSSProperties, useCallback, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { Answer } from "./answer.component";
 import { plural } from "@common/utils";
+import { Button } from "@components/button/button.component";
 
 export function Poll({
   question,
@@ -28,6 +29,10 @@ export function Poll({
     mutationFn: mutations.createUserAnswer,
   });
 
+  const { mutate: removeUserAnswerMutate } = useMutation({
+    mutationFn: mutations.removeUserAnswer,
+  });
+
   const currentUserAnswer = pollUserAnswers.find(
     ({ userId }) => user.id === userId
   );
@@ -40,6 +45,17 @@ export function Poll({
   const answerMessage = isSelectedAnswerCorrect
     ? "Your answer is correct"
     : "Your answer is incorrect";
+
+  const removeUserAnswer = useCallback(() => {
+    if (!currentUserAnswer) {
+      return;
+    }
+
+    removeUserAnswerMutate({
+      answerId: currentUserAnswer.pollAnswerId,
+      messageId,
+    });
+  }, [currentUserAnswer, messageId, removeUserAnswerMutate]);
 
   return (
     <section className="max-w-xl py-2">
@@ -62,20 +78,26 @@ export function Poll({
           />
         ))}
       </section>
-      <span className="leading-none text-sm mt-1 flex justify-between">
-        <span>
-          {pollUserAnswers.length} {plural.member(pollUserAnswers.length)}{" "}
-          answered.
+      <div className="flex justify-between items-center my-2">
+        <span className="leading-none text-sm mt-1 flex justify-between">
+          <span>
+            {pollUserAnswers.length} {plural.member(pollUserAnswers.length)}{" "}
+            answered.
+          </span>
+          &nbsp;
+          <span
+            className={twMerge(
+              "text-red-500",
+              isSelectedAnswerCorrect && "text-green-500"
+            )}
+          >
+            {!isQuiz ? "" : currentUserAnswer && answerMessage}
+          </span>
         </span>
-        <span
-          className={twMerge(
-            "text-red-500",
-            isSelectedAnswerCorrect && "text-green-500"
-          )}
-        >
-          {!isQuiz ? "" : currentUserAnswer && answerMessage}
-        </span>
-      </span>
+        {!!currentUserAnswer && (
+          <Button onClick={removeUserAnswer}>Remove answer</Button>
+        )}
+      </div>
     </section>
   );
 }

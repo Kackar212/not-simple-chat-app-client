@@ -8,12 +8,13 @@ import {
   emoji,
   emoticon,
   mark,
-  MarkedExtensionToken,
+  MarkdownExtensionToken,
+  mention,
   spoiler,
   subText,
   timestamp,
   url,
-} from "@common/marked/extensions";
+} from "@common/simple-markdown/extensions";
 import { twMerge } from "tailwind-merge";
 import hljs from "highlight.js";
 import CheckmarkIcon from "/public/assets/icons/checkmark.svg";
@@ -23,8 +24,13 @@ import SimpleMarkdown, {
   Capture,
   State,
   Parser,
+  Rules,
+  ParserRule,
+  HtmlOutputRule,
+  ReactOutputRule,
 } from "@khanacademy/simple-markdown";
 import { DirectMessageRequest } from "@components/markdown/direct-message-request.component";
+import { Mention } from "@components/markdown/mention.component";
 
 interface CreateReactElementProps {
   key: string | number;
@@ -75,7 +81,7 @@ function createChildren(this: Builder, token: Token) {
   return [token.content];
 }
 
-export function createReactElementFromMarkedToken(
+export function createReactElementFromToken(
   this: Builder,
   token: Token,
   props: CreateReactElementProps
@@ -105,7 +111,7 @@ export function createReactElementFromMarkedToken(
   }
 
   if (token.type === "timestamp") {
-    const timestampToken = token as unknown as MarkedExtensionToken.Timestamp;
+    const timestampToken = token as unknown as MarkdownExtensionToken.Timestamp;
 
     return (
       <time
@@ -121,6 +127,19 @@ export function createReactElementFromMarkedToken(
     );
   }
 
+  if (token.type === CustomTokenType.Mention) {
+    console.log("TOKEN: ", token);
+    return (
+      <Mention
+        key={key}
+        raw={token.raw}
+        id={token.id}
+        isRole={token.isRole}
+        isStaticMention={token.isStaticMention}
+      />
+    );
+  }
+
   if (token.type === "codeBlock") {
     const language = hljs.getLanguage(token.lang);
 
@@ -131,7 +150,7 @@ export function createReactElementFromMarkedToken(
             className={`hljs language-${token.lang}`}
             dangerouslySetInnerHTML={{
               __html: hljs.highlight(token.content as string, {
-                language: language.name,
+                language: token.lang,
               }).value,
             }}
           ></code>
@@ -162,7 +181,7 @@ export function createReactElementFromMarkedToken(
     return (
       <Emoji
         key={key}
-        token={token as MarkedExtensionToken.Emoji}
+        token={token as MarkdownExtensionToken.Emoji}
         isOnlyElement={isOnlyOneElement}
       />
     );
@@ -313,7 +332,7 @@ export function createReactElementFromMarkedToken(
   return createElement(token.type, { key }, ...children);
 }
 
-export const parse = SimpleMarkdown.parserFor({
+const rules = {
   ...SimpleMarkdown.defaultRules,
   spoiler,
   mark,
@@ -324,6 +343,11 @@ export const parse = SimpleMarkdown.parserFor({
   timestamp,
   url,
   directMessageRequest,
+  mention,
+  inlineCode: {
+    ...SimpleMarkdown.defaultRules.inlineCode,
+    match: SimpleMarkdown.inlineRegex(/^(`+)([\s\S]*?)\1$(?!`)/),
+  },
   blockQuote: {
     ...SimpleMarkdown.defaultRules.blockQuote,
     match(source: string, state: State) {
@@ -362,10 +386,12 @@ export const parse = SimpleMarkdown.parserFor({
       return token;
     },
   },
-} as unknown as ParserRules);
+};
+
+export const parse = SimpleMarkdown.parserFor(rules as unknown as ParserRules);
 
 export const builder: Builder = {
-  createReactElement: createReactElementFromMarkedToken,
+  createReactElement: createReactElementFromToken,
   createChildren,
   key: "",
   isOnlyOneElement: false,
@@ -376,6 +402,8 @@ export const builder: Builder = {
     if (tokens.at(-1)?.content === "\n\n") {
       tokens.pop();
     }
+
+    console.log(tokens);
 
     return tokens.map((token, index) =>
       this.createReactElement(token, { key: index })

@@ -21,6 +21,7 @@ export const ProfileSchema = z.object({
 });
 
 export const MemberSchema = z.object({
+  color: z.string(),
   user: UserSchema,
   userId: idSchema,
   id: idSchema,
@@ -41,7 +42,7 @@ export const MemberWithoutUserSchema = MemberSchema.merge(
 );
 
 export const CurrentUserProfileSchema = z.object({
-  member: MemberSchema,
+  member: MemberSchema.extend({ roleIds: z.number().int().array() }),
   user: UserSchema,
   blacklist: BlacklistSchema,
   emojis: EmojiSchema.array(),

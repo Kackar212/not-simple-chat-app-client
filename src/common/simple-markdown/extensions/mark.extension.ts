@@ -1,4 +1,4 @@
-import { Token } from "marked";
+import { Token } from "../simple-markdown";
 import { createSimpleMarkdownExtension } from "./create-extension";
 
 export const NAME = "mark";
@@ -12,7 +12,6 @@ export const createMarkExtension = () =>
   createSimpleMarkdownExtension({
     name: NAME,
     level: "block",
-    start: "==",
     tokenRegexp: /^==[^\n](.*[^\n])==/i,
   });
 

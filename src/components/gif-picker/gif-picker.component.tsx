@@ -7,27 +7,29 @@ import { FormField } from "@components/form-field/form-field.component";
 import GifIcon from "/public/assets/icons/gif.svg";
 import SearchIcon from "/public/assets/icons/search.svg";
 import { TenorGif } from "./gif-picker.types";
+import { FormProvider, useForm } from "react-hook-form";
 
-export function GifPicker({ onSelect = (_tenorGif: TenorGif) => {} }) {
-  const [searchTerm, setSearchTerm] = useState("");
+const defaultOnSelect = (_tenorGif: TenorGif) => {};
+const offset = { mainAxis: 15, alignmentAxis: -10 };
 
-  const onInput: FormEventHandler<HTMLInputElement> = useCallback(
-    ({ currentTarget: { value } }) => {
-      setSearchTerm(value);
+export function GifPicker({ onSelect = defaultOnSelect }) {
+  const useFormResult = useForm({
+    defaultValues: {
+      searchTerm: "",
     },
-    []
-  );
+  });
+  const searchTerm = useFormResult.watch("searchTerm");
 
   const onClear = useCallback(() => {
-    setSearchTerm("");
-  }, []);
+    useFormResult.reset();
+  }, [useFormResult]);
 
   return (
     <PopoverProvider
-      offset={{ mainAxis: 15, alignmentAxis: -10 }}
+      offset={offset}
       placement="top-end"
       strategy="fixed"
-      onOpenChange={() => setSearchTerm("")}
+      onOpenChange={onClear}
     >
       <PopoverTrigger
         className="size-6 flex justify-center items-center hover:animate-wiggle"
@@ -38,22 +40,19 @@ export function GifPicker({ onSelect = (_tenorGif: TenorGif) => {} }) {
       </PopoverTrigger>
       <Popover shouldRenderInPortal>
         <div className="w-[16.25rem] md:w-[453px] max-w-[453px] flex bg-black-630 rounded-md flex-col">
-          <div className="py-2 px-3 pb-0 shadow-header relative z-50">
-            <FormField
-              type="search"
-              label="Search gifs"
-              Icon={<SearchIcon className="size-5" />}
-              name="searchGifs"
-              onInput={onInput}
-              value={searchTerm}
-              onClear={onClear}
-            />
-          </div>
-          <GifPickerRoot
-            setSearchTerm={setSearchTerm}
-            searchTerm={searchTerm}
-            onSelect={onSelect}
-          />
+          <FormProvider {...useFormResult}>
+            <div className="py-2 px-3 pb-0 shadow-header relative z-50">
+              <FormField
+                type="search"
+                label="Search gifs"
+                Icon={<SearchIcon className="size-5" />}
+                name="searchTerm"
+                value={searchTerm}
+                onClear={onClear}
+              />
+            </div>
+            <GifPickerRoot searchTerm={searchTerm} onSelect={onSelect} />
+          </FormProvider>
         </div>
       </Popover>
     </PopoverProvider>

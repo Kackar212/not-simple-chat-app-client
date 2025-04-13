@@ -1,6 +1,6 @@
 import { HTMLProps, PropsWithChildren } from "react";
 import { FormResult } from "../form-result/form-result.component";
-import { builder } from "@common/marked";
+import { builder } from "@common/simple-markdown";
 
 export interface FormProps extends HTMLProps<HTMLFormElement> {
   result?: {

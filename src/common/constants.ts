@@ -24,7 +24,7 @@ export const EmojiScope = {
 } as const;
 
 export const QueryKey = {
-  Server: (serverId: number) => ["get-server", serverId],
+  Server: (serverId?: number) => ["get-server", serverId],
   Messages: (channelId: number) => ["messages", channelId],
   PinnedMessages: (channelId: number) => ["get-pinned-messages", channelId],
   GifCategories: ["gif-categories"],
@@ -89,4 +89,9 @@ export const AvatarSize = {
     stroke: 6,
     offset: 4,
   },
+} as const;
+
+export const Key = {
+  Enter: "Enter",
+  Space: "Space",
 } as const;

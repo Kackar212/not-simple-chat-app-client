@@ -145,20 +145,29 @@ export function Members({ users, server }: MembersProps) {
           {users
             .filter(({ profile }) => profile)
             .map(
-              ({ id, user, profile, isOwner, kickedOutUntil, isKickedOut }) => (
+              ({
+                id,
+                user,
+                profile,
+                isOwner,
+                kickedOutUntil,
+                isKickedOut,
+                color,
+              }) => (
                 <Member
                   key={id}
                   id={id}
                   userId={user.id}
-                  username={user.username}
                   isKickedOut={isKickedOut}
                   kickedOutUntil={kickedOutUntil}
                   avatar={profile.avatar}
+                  isInvisible={profile.isInvisible}
                   currentUserId={currentUser.id}
                   isOwner={isOwner}
                   serverId={serverId}
                   status={profile.status}
                   displayName={profile.displayName}
+                  color={color}
                 />
               )
             )}

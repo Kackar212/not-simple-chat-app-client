@@ -303,11 +303,11 @@ export function ProfilePreviewPopover({ server }: ProfilePreviewPopoverProps) {
                   />
                 </div>
               </div>
-              {server && member.isOwner && (
-                <div className="p-2 py-1">
+              <div className="bg-black-630 p-2 mb-1 gap-2 flex flex-col rounded-md">
+                {server && member.isOwner && (
                   <Button
                     onClick={openLeaveServerConfirmModal}
-                    className="capitalize font-light text-base items-center w-full flex gap-2 p-2 py-1 text-red-500 bg-black-630 rounded-md hover:bg-black-560"
+                    className="capitalize text-base items-center w-full flex gap-2 p-2 py-1 text-red-500 bg-black-630 rounded-md hover:bg-black-560"
                   >
                     <TrashBinIcon className="size-4" aria-hidden />
                     <span>
@@ -315,13 +315,12 @@ export function ProfilePreviewPopover({ server }: ProfilePreviewPopoverProps) {
                       server
                     </span>
                   </Button>
-                </div>
-              )}
-              {server && !member.isOwner && (
-                <div className="p-2 py-1">
+                )}
+                <hr className="border-black-500" />
+                {server && !member.isOwner && (
                   <Button
                     onClick={openLeaveServerConfirmModal}
-                    className="capitalize font-light text-base items-center w-full flex gap-2 text-red-500 p-2 py-1 bg-black-630 rounded-md hover:bg-black-560"
+                    className="capitalize text-base items-center w-full flex gap-2 text-red-500 p-2 py-1 bg-black-630 rounded-md hover:bg-black-560"
                   >
                     <LeaveIcon className="size-4" aria-hidden />
                     <span>
@@ -329,12 +328,11 @@ export function ProfilePreviewPopover({ server }: ProfilePreviewPopoverProps) {
                       server
                     </span>
                   </Button>
-                </div>
-              )}
-              <div className="p-2 py-2 bg-black-630 rounded-md mt-2">
+                )}
+
                 <Link
                   href={`/auth/logout`}
-                  className="flex gap-2 items-center text-red-500 bg-black-630 p-2 py-1 rounded-[4px] hover:bg-black-560"
+                  className="flex gap-2 items-center text-red-500 bg-black-630 p-2 py-1 rounded-md hover:bg-black-560"
                 >
                   <LeaveIcon className="size-4" aria-hidden />
                   Logout

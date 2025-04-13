@@ -35,11 +35,15 @@ const skinToneToIndexMap: Record<string, number> = {
 export class EmojiMemoryStorage {
   static #initialized = false;
   static #storage: Array<Emoji> = [];
-  static #storageMap: Map<string, Emoji> = new Map();
+  static #storageMap: Map<string | number, Emoji> = new Map();
   static #surrogatesMap: Map<string, string> = new Map();
 
   static getByName(name: string) {
     return this.#storageMap.get(name);
+  }
+
+  static getById(id: number) {
+    return this.#storageMap.get(id);
   }
 
   static getAll() {
@@ -76,8 +80,16 @@ export class EmojiMemoryStorage {
       return;
     }
 
+    if (emoji.id && this.#storageMap.has(emoji.id)) {
+      return;
+    }
+
     this.#storage.unshift(emoji);
     this.#storageMap.set(emoji.uniqueName, emoji);
+
+    if (emoji.id) {
+      this.#storageMap.set(emoji.id, emoji);
+    }
   }
 
   static setCustomEmojis(emojis: CustomEmoji[]) {

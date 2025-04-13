@@ -1,10 +1,6 @@
-import Loading from "@/app/loading";
-import { Friend as FriendEntity } from "@common/api/schemas/friend.schema";
 import { FriendStatus } from "@common/enums/friend-status.enum";
 import { plural } from "@common/utils";
-import { Friend } from "@components/friend/friend.component";
 import { Loader } from "@components/loader/loader.component";
-import { AnimatePresence } from "framer-motion";
 import { ReactNode } from "react";
 
 interface FriendsListProps {
@@ -44,9 +40,7 @@ export function FriendsList({
           <Loader />
         </div>
       )}
-      <AnimatePresence>
-        <ul className="px-[4.5rem] py-2 w-full relative">{children}</ul>
-      </AnimatePresence>
+      <ul className="px-[4.5rem] py-2 w-full relative">{children}</ul>
     </div>
   );
 }

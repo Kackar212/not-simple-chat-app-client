@@ -9,6 +9,7 @@ import { placeholderSchema } from "@common/zod/placeholder.schema";
 import { serverNameSchema } from "@common/zod/server-name.schema";
 import { urlSchema } from "@common/zod/url.schema";
 import { z } from "zod";
+import { RoleSchema } from "./role.schema";
 
 export const BaseServerSchema = z.object({
   id: idSchema,
@@ -25,9 +26,10 @@ export const ServerSchema = z.object({
   serverIcon: urlSchema.nullable(),
   iconPlaceholder: placeholderSchema.nullable(),
   channels: ChannelWithoutMessages.array(),
-  members: MemberSchema.array(),
+  members: MemberSchema.extend({ isInvisible: z.void() }).array(),
   ownerId: z.number().int(),
   member: MemberSchema,
+  roles: RoleSchema.array(),
   inviteLink: z.object({
     inviteId: z.string(),
     url: z.string().url(),
@@ -50,6 +52,7 @@ export const UserServerSchema = ServerSchema.merge(
     channels: UserServerChannelSchema.array(),
     defaultChannel: UserServerChannelSchema.optional(),
     inviteLink: z.void(),
+    roles: z.void(),
   })
 );
 

@@ -6,7 +6,7 @@ import {
 } from "react-virtualized-compat";
 import { TenorGif } from "./gif-picker.types";
 import { COLUMN_HEIGHT, COLUMN_WIDTH } from "./gif-picker.constants";
-import { Key, useState } from "react";
+import { Key, useCallback, useMemo, useState } from "react";
 import { GifSkeleton } from "@components/skeleton/gif-skeleton.component";
 
 interface GifProps extends Omit<CellMeasurerProps, "children" | "key"> {
@@ -42,11 +42,24 @@ export function Gif({
 }: GifProps) {
   const [isLoading, setIsLoading] = useState(true);
   const height = getHeight(size);
+  const cellSizeStyle = useMemo(
+    () => ({ width: COLUMN_WIDTH, height }),
+    [height]
+  );
+  const gifSizeStyle = useMemo(
+    () => ({
+      width: COLUMN_WIDTH,
+      height,
+      aspectRatio: `${COLUMN_WIDTH} / ${height}`,
+    }),
+    [height]
+  );
+  const onLoadedData = useCallback(() => setIsLoading(false), []);
 
   return (
     <CellMeasurer cache={cache} index={index} key={cacheKey} parent={parent}>
       <div style={style}>
-        <div className="relative" style={{ width: COLUMN_WIDTH, height }}>
+        <div className="relative" style={cellSizeStyle}>
           <button
             aria-disabled={isFetching}
             aria-label={content_description}
@@ -67,12 +80,8 @@ export function Gif({
               preload="auto"
               width={COLUMN_WIDTH}
               height={height}
-              onLoadedData={() => setIsLoading(false)}
-              style={{
-                width: COLUMN_WIDTH,
-                height,
-                aspectRatio: `${COLUMN_WIDTH} / ${height}`,
-              }}
+              onLoadedData={onLoadedData}
+              style={gifSizeStyle}
               className="rounded-md"
             ></video>
           )}

@@ -3,12 +3,17 @@ import { MessageWithBaseUser as MessageEntity } from "@common/api/schemas/messag
 import { Avatar } from "@components/avatar/avatar.component";
 import { formatRelative } from "date-fns";
 import { MessageContent } from "./message-content.component";
-import { MouseEvent, useCallback, useState } from "react";
+import {
+  CSSProperties,
+  MouseEvent,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { authContext } from "@common/auth/auth.context";
 import { useSafeContext } from "@common/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { twMerge } from "tailwind-merge";
-import { motion } from "framer-motion";
 import { Loader } from "@components/loader/loader.component";
 import { MessageType } from "@common/enums/message-type.enum";
 import { MemberProfilePreview } from "@components/member-profile/member-profile-preview.component";
@@ -22,6 +27,7 @@ import { toast } from "react-toastify";
 import { AvatarSize, QueryKey } from "@common/constants";
 import { Direction } from "@common/api/hooks";
 import PinIcon from "/public/assets/icons/pin.svg";
+import { usePopover } from "@components/popover/use-popover.hook";
 
 interface MessageProps extends MessageEntity {
   isSubMessage: boolean;
@@ -45,14 +51,16 @@ export function Message(message: MessageProps) {
     editedAt,
     embeds,
     poll,
+    mentionRoles,
+    mentions,
+    mentionEveryone,
   } = message;
+
+  const { serverId, user, profile } = member;
+  const { displayName, avatar, username } = { ...user, ...profile };
 
   const { openPinnedMessages, setMessageReference } =
     useSafeContext(chatContext);
-
-  const { serverId, user, profile } = member;
-
-  const { displayName, avatar, username } = { ...user, ...profile };
 
   const deleteMessageMutation = useMutation({
     mutationKey: ["delete-message", id],
@@ -77,8 +85,13 @@ export function Message(message: MessageProps) {
   const [isMouseOver, setIsMouseOver] = useState(false);
 
   const {
-    auth: { user: currentUser, blacklist },
+    auth: { user: currentUser, blacklist, member: currentMember },
   } = useSafeContext(authContext);
+
+  const isMentioned =
+    mentionEveryone ||
+    mentions.some(({ memberId }) => currentMember.id === memberId) ||
+    mentionRoles.some(({ roleId }) => currentMember.roleIds.includes(roleId));
 
   const messageCreatedAt = formatRelative(createdAt, new Date());
   const isCurrentUserAuthor = currentUser.username === username;
@@ -89,7 +102,7 @@ export function Message(message: MessageProps) {
 
   const popover = (
     <PopoverProvider>
-      <PopoverTrigger className="text-sm text-white-500 hover:underline leading-[1.25rem] font-medium">
+      <PopoverTrigger className="text-sm text-(--member-color,rgb(220,220,220)) hover:underline leading-[1.25rem] font-medium">
         {displayName}
       </PopoverTrigger>{" "}
       <Popover>
@@ -139,7 +152,7 @@ export function Message(message: MessageProps) {
         around: id,
       });
 
-      queryClient.setQueryData(QueryKey.Messages(channelId), (old) => {
+      queryClient.setQueryData(QueryKey.Messages(channelId), () => {
         return {
           pageParams: [
             {
@@ -248,17 +261,22 @@ export function Message(message: MessageProps) {
   return (
     !isHidden && (
       <>
-        <motion.div
+        <div
           data-id={id}
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0, height: 0 }}
           onPointerEnter={onMouseEnter}
           onPointerLeave={onMouseLeave}
           className={twMerge(
             "relative px-1.5 lg:px-4 py-0.5 message hover:bg-black-900/5",
             isEdited && "bg-black-630/50 rounded-md py-3 my-1",
-            !withActions && "py-2 items-center"
+            !withActions && "py-2 items-center",
+            isMentioned &&
+              "bg-[oklab(0.555434_0.0458316_0.113021_/_0.0784314)] before:absolute before:h-full before:top-0 before:left-0 before:w-0.5 before:bg-[oklab(0.750629_0.0319038_0.103774)]"
           )}
+          style={
+            {
+              "--member-color": member.color,
+            } as CSSProperties
+          }
         >
           {deleteMessageMutation.isPending && (
             <div className="flex bg-black-700/60 absolute size-full z-10 justify-center items-center">
@@ -386,7 +404,7 @@ export function Message(message: MessageProps) {
               />
             )}
           </div>
-        </motion.div>
+        </div>
       </>
     )
   );

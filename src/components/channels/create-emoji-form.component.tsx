@@ -58,25 +58,20 @@ export function CreateEmojiForm({ serverName, serverId }: CreateEmojiForm) {
     },
   });
 
-  const onSubmit = handleSubmit(
-    (data) => {
-      if (!serverId || !canEmojiBeCreated) {
-        return;
-      }
-
-      const requestData = {
-        serverId,
-        name: data.name,
-        file: data.emoji,
-        scope: data.scope,
-      };
-
-      createEmoji(requestData);
-    },
-    (error) => {
-      console.log(error);
+  const onSubmit = handleSubmit((data) => {
+    if (!serverId || !canEmojiBeCreated) {
+      return;
     }
-  );
+
+    const requestData = {
+      serverId,
+      name: data.name,
+      file: data.emoji,
+      scope: data.scope,
+    };
+
+    createEmoji(requestData);
+  });
 
   return (
     <Form onSubmit={onSubmit} result={status}>

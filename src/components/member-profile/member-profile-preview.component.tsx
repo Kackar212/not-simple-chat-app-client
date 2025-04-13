@@ -245,7 +245,7 @@ export function MemberProfilePreview({
                               "--tw-translate-x": `-${index * 0.375}rem`,
                             } as React.CSSProperties
                           }
-                          className="translate-x-0"
+                          className="translate-x-0 flex"
                         >
                           <ServerIcon
                             server={server}

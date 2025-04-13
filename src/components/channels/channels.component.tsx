@@ -216,6 +216,7 @@ export function Channels({ channels = [], server }: ChannelsListProps) {
                 items={items}
                 placement="bottom"
                 absolute
+                canDisplayTooltip={false}
                 fullWidth
                 openButton={{
                   className:

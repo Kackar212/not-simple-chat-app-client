@@ -39,11 +39,13 @@ export function Link({
     normalizedHref.pathname += `${optionalPathSegment}`;
   });
 
+  const ariaCurrent = getAriaCurrent(currentPathname, normalizedHref.pathname);
+
   return (
     <_Link
       {...attrs}
-      aria-current={getAriaCurrent(currentPathname, normalizedHref.pathname)}
-      href={normalizedHref}
+      aria-current={ariaCurrent}
+      href={href}
       className={className}
     >
       {children}

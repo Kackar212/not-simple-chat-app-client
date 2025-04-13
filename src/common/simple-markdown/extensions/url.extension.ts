@@ -1,4 +1,3 @@
-import { Tokens } from "marked";
 import { createSimpleMarkdownExtension } from "./create-extension";
 import SimpleMarkdown from "@khanacademy/simple-markdown";
 
@@ -15,7 +14,6 @@ export const createUrlExtension = () =>
   createSimpleMarkdownExtension({
     name: NAME,
     level: "inline",
-    start: ["http://", "https://", "www.", "steam://"],
     tokenRegexp: /^((https?:\/\/|steam:\/\/|www\.)[^\s<]+[^<.,:;"')\]\s])/,
     order: SimpleMarkdown.defaultRules.text.order - 1,
     parse(capture) {

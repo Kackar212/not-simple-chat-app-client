@@ -1,4 +1,4 @@
-import { Token } from "marked";
+import hljs from "highlight.js";
 import { createSimpleMarkdownExtension } from "./create-extension";
 import SimpleMarkdown from "@khanacademy/simple-markdown";
 
@@ -15,7 +15,6 @@ export const createCodeExtension = () =>
   createSimpleMarkdownExtension<Code>({
     name: NAME,
     level: "block",
-    start: "```",
     tokenRegexp: /^```(?:([a-z0-9_+\-.#]+?)\n)?\n*([^\n][^]*?)\n*```/i,
     order: SimpleMarkdown.defaultRules.codeBlock.order,
     parse(capture) {

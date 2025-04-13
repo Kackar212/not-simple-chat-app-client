@@ -68,7 +68,7 @@ export default function Providers({ children }: PropsWithChildren) {
   return (
     <>
       <CallIcon className="absolute -left-full" />
-      <svg className="absolute -left-1">
+      <svg className="absolute -z-50 sr-only">
         {Object.values(AvatarSize).map((size, index) => (
           <AvatarStatusMask size={size} key={index} />
         ))}

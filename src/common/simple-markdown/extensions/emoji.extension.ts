@@ -39,14 +39,12 @@ const defaultParse = (capture: Capture) => {
 
 export const createEmojiExtension = ({
   emojiRegexp = defaultEmojiRegexp,
-  start = ":",
   name = NAME,
   parse = defaultParse,
   match,
 }: CreateEmojiExtensionProps = {}) =>
   createSimpleMarkdownExtension({
     name,
-    start,
     tokenRegexp: emojiRegexp,
     level: "inline",
     parse,

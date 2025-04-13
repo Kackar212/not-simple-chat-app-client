@@ -3,6 +3,7 @@ import {
   QueryResponse,
   createMessage,
   getMessages,
+  getServer,
 } from "@common/api";
 import { useGetMessages } from "@common/api/hooks";
 import { useQuery } from "@common/api/hooks/use-query.hook";
@@ -31,13 +32,14 @@ import {
   useEffect,
   useInsertionEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
 import { useOnReaction } from "./use-on-reaction.hook";
 import { useOnMessage } from "./use-on-message.hook";
-import { getQueryClient } from "@/app/get-query-client";
 import { ServerSocketEvents } from "@common/interfaces/server-socket.events.interface";
+import { useParams } from "next/navigation";
 
 interface UseChatProps {
   channelId: number;
@@ -57,6 +59,8 @@ export function useChat({
   const scrollContainerRef = useRef<HTMLElement | null>(null);
   const skeletonsRef = useRef<HTMLDivElement | null>(null);
   const queryClient = useQueryClient();
+  const params = useParams();
+  const serverId = params.serverId ? +params.serverId : undefined;
 
   const {
     auth: { user },
@@ -83,15 +87,16 @@ export function useChat({
     scrollContainerRef.current?.scroll({ top: 99999 });
   }, [isScrollable]);
 
-  const [messageReference, setMessageReference] = useState<
-    MessageWithBaseUser | undefined
-  >(undefined);
+  const [messageReference, setMessageReference] =
+    useState<Message["messageReference"]>(undefined);
 
   const getMessagesQueryResult = useGetMessages({ channelId, initialMessages });
 
   const { messages } = getMessagesQueryResult.data || {
     messages: [] as MessageWithBaseUser[],
   };
+
+  console.log(messages);
 
   const groupedMessages = useGroupMessages(messages);
 
@@ -160,7 +165,12 @@ export function useChat({
                     ...message,
                     poll: {
                       ...message.poll,
-                      pollUserAnswers: [...userAnswers, answer],
+                      pollUserAnswers: answer.isDeleted
+                        ? userAnswers.filter(
+                            ({ pollAnswerId }) =>
+                              answer.pollAnswerId !== pollAnswerId
+                          )
+                        : [...userAnswers, answer],
                     },
                   };
                 }),
@@ -197,6 +207,17 @@ export function useChat({
     setIsSidePanelHidden((isHidden) => !isHidden);
   }, []);
 
+  const server = useMemo(
+    () =>
+      queryClient.getQueryData<Awaited<ReturnType<typeof getServer>>>(
+        QueryKey.Server(serverId)
+      ),
+    [queryClient, serverId]
+  );
+
+  const members = server?.data?.members || [];
+  const roles = server?.data?.roles || [];
+
   return {
     channelId,
     channelName,
@@ -217,6 +238,9 @@ export function useChat({
     groupedMessages,
     messages,
     skeletonsRef,
+    serverId: serverId ? +serverId : undefined,
+    members,
+    roles,
     getMessagesQueryResult: {
       ...getMessagesQueryResult,
       hasNextPage: getMessagesQueryResult.isLoading

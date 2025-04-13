@@ -10,40 +10,44 @@ import { useParams } from "next/navigation";
 import { PropsWithChildren, useEffect } from "react";
 
 export default function ChatLayout({ children }: PropsWithChildren) {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
-  const params = useParams<{
-    channelId?: string | string[];
-    serverId?: string;
-  }>();
-  const serverId = params.serverId ? Number(params.serverId) : undefined;
-  const isChannelIdOptional = Array.isArray(params.channelId);
-  let channelId =
-    params.channelId && isString(params.channelId) && Number(params.channelId);
+  // const params = useParams<{
+  //   channelId?: string | string[];
+  //   serverId?: string;
+  // }>();
+  // const serverId = params.serverId ? Number(params.serverId) : -1;
+  // const isChannelIdOptional = Array.isArray(params.channelId);
+  // let channelId = params.channelId ? Number(params.channelId) : -1;
 
-  if (params.channelId && isChannelIdOptional) {
-    channelId = Number(params.channelId[0]);
-  }
+  // if (params.channelId && isChannelIdOptional) {
+  //   channelId = Number(params.channelId[0]);
+  // }
 
-  usePrefetchQuery({
-    queryKey: QueryKey.Server(serverId || -1),
-    queryFn: serverId ? () => getServer({ serverId }) : () => ({}),
-  });
+  // usePrefetchQuery({
+  //   queryKey: QueryKey.Server(serverId),
+  //   queryFn: serverId ? () => getServer({ serverId }) : () => ({}),
+  // });
 
-  useEffect(() => {
-    async function prefetchDirectMessageChannel() {
-      if (isChannelIdOptional || !channelId) {
-        return;
-      }
+  // usePrefetchQuery({
+  //   queryKey: QueryKey.DirectMessageChannel(channelId),
+  //   queryFn: () => getDirectMessageChannel({ channelId: channelId }),
+  // });
 
-      await queryClient.prefetchQuery({
-        queryKey: QueryKey.DirectMessageChannel(channelId),
-        queryFn: () => getDirectMessageChannel({ channelId: +channelId }),
-      });
-    }
+  // useEffect(() => {
+  //   async function prefetchDirectMessageChannel() {
+  //     if (isChannelIdOptional || !channelId) {
+  //       return;
+  //     }
 
-    prefetchDirectMessageChannel();
-  }, [channelId, serverId, isChannelIdOptional, queryClient]);
+  //     // await queryClient.prefetchQuery({
+  //     //   queryKey: QueryKey.DirectMessageChannel(channelId),
+  //     //   queryFn: () => getDirectMessageChannel({ channelId: +channelId }),
+  //     // });
+  //   }
+
+  //   prefetchDirectMessageChannel();
+  // }, [channelId, serverId, isChannelIdOptional, queryClient]);
 
   return (
     <>

@@ -16,7 +16,7 @@ export function DirectMessageRequest({
     mutationFn: mutations.acceptDirectMessageRequest,
   });
 
-  const { mutate: decline } = useMutation({
+  const { mutate: decline, isPending: isDeclinePending } = useMutation({
     mutationFn: mutations.declineDirectMessageRequest,
   });
 
@@ -42,8 +42,9 @@ export function DirectMessageRequest({
           Accept
         </Button>
         <Button
+          isLoading={isDeclinePending}
           className="text-sm bg-red-500 hover:bg-red-700"
-          onClick={acceptDirectMessageRequest}
+          onClick={declineDirectMessageRequest}
         >
           Decline
         </Button>

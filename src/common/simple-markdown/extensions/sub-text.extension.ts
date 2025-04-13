@@ -1,4 +1,3 @@
-import { Token, TokenizerAndRendererExtension } from "marked";
 import { createSimpleMarkdownExtension } from "./create-extension";
 import SimpleMarkdown, { SingleASTNode } from "@khanacademy/simple-markdown";
 

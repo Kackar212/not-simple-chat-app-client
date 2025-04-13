@@ -9,11 +9,11 @@ import { MemberProfilePreview } from "@components/member-profile/member-profile-
 import OwnerIcon from "/public/assets/icons/owner.svg";
 import { format } from "date-fns";
 import { AvatarSize } from "@common/constants";
+import { CSSProperties } from "react";
 
 interface MemberProps {
   id: number;
   avatar: string;
-  username: string;
   userId: number;
   currentUserId: number;
   isOwner: boolean;
@@ -22,12 +22,13 @@ interface MemberProps {
   displayName: string;
   isKickedOut: boolean;
   kickedOutUntil: string | null;
+  color: string;
+  isInvisible?: boolean;
 }
 
 export function Member({
   id,
   avatar,
-  username,
   userId,
   currentUserId,
   isOwner,
@@ -36,6 +37,8 @@ export function Member({
   displayName,
   isKickedOut,
   kickedOutUntil,
+  color,
+  isInvisible,
 }: MemberProps) {
   const isCurrentUser = currentUserId === userId;
 
@@ -67,10 +70,13 @@ export function Member({
               src={avatar}
               aria-hidden
               size={AvatarSize.LG}
-              status={status}
+              status={isInvisible ? ActivityStatus.Offline : status}
             />
             <span className="grid grid-cols-[1fr_24px] justify-between items-center gap-1.5">
-              <span className="text-ellipsis overflow-hidden whitespace-nowrap">
+              <span
+                className="text-ellipsis overflow-hidden whitespace-nowrap text-(--member-color,rgb(220,220,220))"
+                style={{ "--member-color": color } as CSSProperties}
+              >
                 {displayName}
               </span>
               {isOwner && (

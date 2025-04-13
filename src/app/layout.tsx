@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import Providers from "./providers";
-import { Sound } from "@common/rtc/helpers";
 import "./highlight.languages";
 import "react-toastify/dist/ReactToastify.css";
 import "react-tabs/style/react-tabs.css";
 import "./globals.css";
-import { Tooltip } from "react-tooltip";
-import { ErrorBoundary } from "./error.boundary";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { getQueryClient } from "./get-query-client";
 
 const openSans = Open_Sans({
   subsets: ["latin"],
@@ -30,6 +25,10 @@ export default async function RootLayout({
   return (
     <html lang="en" className="bg-black-600">
       <head>
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/easymde/dist/easymde.min.css"
+        />
         <script
           src="//cdn.temasys.io/adapterjs/0.15.x/adapter.min.js"
           async

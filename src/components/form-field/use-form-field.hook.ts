@@ -5,9 +5,10 @@ interface UseFormFieldProps {
   name: string;
   id?: string;
   onChange?: FormEventHandler<HTMLInputElement>;
+  value?: unknown;
 }
 
-export function useFormField({ name, id, onChange }: UseFormFieldProps) {
+export function useFormField({ name, id, onChange, value }: UseFormFieldProps) {
   const {
     formState: { errors },
     register,
@@ -24,6 +25,6 @@ export function useFormField({ name, id, onChange }: UseFormFieldProps) {
     errorId,
     id: inputId,
     hintId,
-    registerProps: register(name, { onChange }),
+    registerProps: register(name, { onChange, value }),
   };
 }

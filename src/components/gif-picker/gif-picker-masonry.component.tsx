@@ -1,16 +1,12 @@
 import { useCallback, useMemo, useRef } from "react";
-import { MasonryCellProps } from "react-virtualized";
 import {
-  CellMeasurer,
   CellMeasurerCache,
   Masonry,
   OnScrollCallback,
   Positioner,
-  ScrollParams,
-  Size,
+  MasonryCellProps,
 } from "react-virtualized-compat";
 import { TenorGif } from "./gif-picker.types";
-import { COLUMN_HEIGHT, COLUMN_WIDTH } from "./gif-picker.constants";
 import { Gif } from "./gif.component";
 import { useSafeContext } from "@common/hooks";
 import { popoverContext } from "@components/popover/popover.context";

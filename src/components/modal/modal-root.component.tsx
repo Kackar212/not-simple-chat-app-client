@@ -91,7 +91,7 @@ export function ModalRoot(props: ModalProps) {
         </div>
       </dialog>
       {isOpen && (
-        <div className="bg-black-1000/50 fixed top-0 left-0 bottom-0 right-0 z-[130]"></div>
+        <div className="bg-black-1000/50 fixed top-0 left-0 bottom-0 right-0 z-[9999]"></div>
       )}
     </>,
     document.body

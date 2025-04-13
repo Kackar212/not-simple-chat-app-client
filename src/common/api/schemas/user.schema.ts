@@ -16,7 +16,7 @@ export const UserSchema = z.object({
   displayName: displayNameSchema,
   createdAt: z.string(),
   description: z.string(),
-  isInvisible: z.boolean(),
+  isInvisible: z.boolean().optional(),
   specialStatus: z.nativeEnum(SpecialStatus).nullable(),
   isSpeaking: z.boolean().optional(),
   isSelfMuted: z.boolean().optional(),

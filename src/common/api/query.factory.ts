@@ -317,6 +317,7 @@ export function createQuery<Endpoint extends string>(): Query<Endpoint> {
           const handler = handleResponse<ResponseType, ResponseError, Endpoint>;
 
           const result = await handler.call(query, response, config);
+          console.log("RESULT: ", result);
 
           return result;
         } catch (fetchError) {

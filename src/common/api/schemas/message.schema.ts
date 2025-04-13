@@ -57,6 +57,7 @@ export const UserAnswerSchema = z.object({
   userId: z.number().int(),
   pollAnswerId: z.number().int(),
   pollAnswer: AnswerSchema,
+  isDeleted: z.boolean().optional(),
 });
 
 export const PollSchema = z.object({
@@ -67,7 +68,12 @@ export const PollSchema = z.object({
   pollUserAnswers: UserAnswerSchema.array(),
 });
 
-export const MessageSchema = z.object({
+const EmbedsSchema = z
+  .object({ embed: EmbedSchema })
+  .transform((val) => val.embed)
+  .array();
+
+export const _MessageSchema = z.object({
   id: idSchema,
   isDeleted: z.boolean().optional(),
   message: z.string(),
@@ -86,26 +92,24 @@ export const MessageSchema = z.object({
   divide: z.boolean().optional(),
   isSystemMessage: z.boolean(),
   reactions: ReactionSchema.array(),
-  embeds: z
-    .object({ embed: EmbedSchema })
-    .transform((val) => val.embed)
-    .array(),
-  messageReference: z
+  embeds: EmbedsSchema,
+  mentionRoles: z
     .object({
-      id: idSchema,
-      message: z.string(),
-      type: z.nativeEnum(MessageType),
-      member: z.object({
-        roles: z.array(z.object({ role: z.object({ color: z.string() }) })),
-        user: BasicUserSchema,
-      }),
+      roleId: idSchema,
+      messageId: idSchema,
     })
-    .optional()
-    .nullable(),
+    .array(),
+  mentions: z
+    .object({
+      memberId: idSchema,
+      messageId: idSchema,
+    })
+    .array(),
+  mentionEveryone: z.boolean(),
   poll: PollSchema.nullable(),
 });
 
-export const MessageWithBaseUserSchema = MessageSchema.merge(
+export const _MessageWithBaseUserSchema = _MessageSchema.merge(
   z.object({
     member: MemberSchema.merge(
       z.object({
@@ -116,6 +120,27 @@ export const MessageWithBaseUserSchema = MessageSchema.merge(
     ),
   })
 );
+
+export const MessageWithBaseUserSchema = _MessageWithBaseUserSchema.extend({
+  messageReference: _MessageWithBaseUserSchema
+    .extend({
+      embeds: EmbedsSchema.optional(),
+      attachments: AttachmentSchema.array().optional(),
+      reactions: ReactionSchema.array().optional(),
+    })
+    .optional()
+    .nullable(),
+});
+
+export const MessageSchema = _MessageSchema.extend({
+  messageReference: MessageWithBaseUserSchema.extend({
+    embeds: EmbedsSchema.optional(),
+    attachments: AttachmentSchema.array().optional(),
+    reactions: ReactionSchema.array().optional(),
+  })
+    .optional()
+    .nullable(),
+});
 
 export const MessagesResponseWithCursorSchema = z.object({
   messages: MessageWithBaseUserSchema.array(),

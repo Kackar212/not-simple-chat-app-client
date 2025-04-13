@@ -7,13 +7,11 @@ import { ActivityStatus } from "@common/enums/activity-status.enum";
 import { FriendStatus } from "@common/enums/friend-status.enum";
 import { Avatar } from "@components/avatar/avatar.component";
 import { Button } from "@components/button/button.component";
-import { PlusIcon } from "@components/icons";
 import { ChatBubbleIcon } from "@components/icons/chat-bubble.icon";
 import { Link } from "@components/link/link.component";
 import { Menu } from "@components/menu/menu.component";
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
-import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useBlacklist } from "@common/api/hooks/use-blacklist.hook";
@@ -119,13 +117,11 @@ export function Friend({
   const isPending = status === FriendStatus.Pending;
 
   return (
-    <motion.li
+    <li
       className={twMerge(
         "relative my-2 cursor-pointer p-2 hover:bg-gray-260/30 rounded-md",
         isLoading && "hover:bg-black-600/100"
       )}
-      initial={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
     >
       {isLoading && (
         <Loading className="z-10 bg-black-700/50 rounded-md absolute" />
@@ -214,6 +210,6 @@ export function Friend({
         userId={friend.id}
         isCurrentUser={false}
       />
-    </motion.li>
+    </li>
   );
 }

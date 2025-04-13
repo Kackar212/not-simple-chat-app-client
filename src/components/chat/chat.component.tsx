@@ -54,7 +54,7 @@ export const Chat = function Chat({
 
   const { setSession, isMicrophoneGranted, isInteractionRequired } =
     useSafeContext(rtcContext);
-  console.log(initialMessages);
+
   const microphoneNotGrantedModal = useModal(() => {
     setSession((rtcSession) => ({
       ...rtcSession,
